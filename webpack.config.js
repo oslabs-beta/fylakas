@@ -5,9 +5,10 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': 'http://localhost:3000'
-    }
+    },
+    headers: {'Access-Control-Allow-Origin': '*'},
   },
-  entry: path.join(__dirname, 'client/index.js'),
+  entry: path.join(__dirname, 'client/App.jsx'),
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'bundle.js',
