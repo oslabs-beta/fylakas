@@ -9,6 +9,11 @@ const PORT = 3000;
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/build', express.static(path.resolve(__dirname, '../build')))
+
+app.get('/', (req, res) => {
+  return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
+});
 
 // catch-all route handler for any requests to an unknown route
 app.use('*', (req, res) => res.status(404).send('This is not the page you\'re looking for...'));
