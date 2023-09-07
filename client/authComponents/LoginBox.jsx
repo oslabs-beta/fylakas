@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 
-const LoginBox = ({ routeToSignupPage }) => {
+const LoginBox = ({ routeToSignupPage, logIn }) => {
   const [usernameField, setUsernameField] = useState('');
   const [passwordField, setPasswordField] = useState('');
 
   // Still requires real functionality
-  const logIn = (e) => {
+  const checkLogIn = (e) => {
     e.preventDefault();
     console.log(usernameField, passwordField);
+    logIn();
   }
 
   return (
@@ -24,7 +25,7 @@ const LoginBox = ({ routeToSignupPage }) => {
           placeholder='Password'
           onChange={(e) => setPasswordField(e.target.value)}
         ></input>
-        <button onClick = {logIn}>Log In</button>
+        <button onClick = {checkLogIn}>Log In</button>
       </form>
       <button onClick = {routeToSignupPage}>Create new account?</button>
     </div>

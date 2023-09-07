@@ -1,22 +1,19 @@
 import React from 'react';
 
-const NodesRunningBox = () => {
+const VisualizationItem = () => {
 
   return (
-    // <div>
-    //   <h1> NodesRunningBox </h1>
-    // </div>
     <div className="col">
     <div className="card mb-4 rounded-3 shadow-sm">
       <div className="card-header py-3">
-        <h4 className="my-0 fw-normal"> # of nodes running</h4>
+        <h4 className="my-0 fw-normal"> a graph or something idk</h4>
       </div>
       <div className="card-body">
         <ul className="list-unstyled mt-3 mb-4">
-          <li>Data</li>
-          <li>Data</li>
-          <li>Data</li>
-          <li>Data</li>
+          <li>math</li>
+          <li>math</li>
+          <li>math</li>
+          <li>math</li>
         </ul>
       </div>
     </div>
@@ -24,4 +21,4 @@ const NodesRunningBox = () => {
   );
 };
 
-export default NodesRunningBox;
+export default VisualizationItem;
