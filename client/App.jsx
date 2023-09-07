@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 
 function App() {
   // declare initial state and assign to 'false' using useState hook
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     // Will check to see if user is logged in
@@ -20,7 +20,6 @@ function App() {
   // Render the page within a div
   return (
     <div className = "App">
-      <h1> 'Ello govnuh </h1>
       { page }
     </div>
   )
