@@ -1,8 +1,11 @@
 const path = require("path");
 const express = require("express");
-// const messageRouter = require("./router/routes.js");
 const app = express();
 const PORT = 3000;
+
+// routers here
+
+const authRouter = require("./routers/authRouter.js");
 
 /**
  * handle parsing request body
@@ -15,6 +18,8 @@ app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 
+app.use('/auth', authRouter);
+
 // catch-all route handler for any requests to an unknown route
 app.use('*', (req, res) => res.status(404).send('This is not the page you\'re looking for...'));
 
@@ -22,7 +27,7 @@ app.use('*', (req, res) => res.status(404).send('This is not the page you\'re lo
 app.use((err, req, res, next) => {
     const defaultErr = {
       log: "Express error handler caught unknown middleware error",
-      status: 400,
+      status: 500,
       message: { err: "An error occurred" },
     };
     const errorObj = Object.assign({}, defaultErr, err);
