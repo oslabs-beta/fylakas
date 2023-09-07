@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-const SignupBox = ({routeToLoginPage}) => {
+const SignupBox = ({ routeToLoginPage, logIn }) => {
   const [usernameField, setUsernameField] = useState('');
   const [passwordField, setPasswordField] = useState('');
 
@@ -8,6 +8,7 @@ const SignupBox = ({routeToLoginPage}) => {
   const signUp = (e) => {
     e.preventDefault();
     console.log(usernameField, passwordField);
+    logIn();
   }
 
   return (
