@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 
 function App() {
   // declare initial state and assign to 'false' using useState hook
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // Is isLoggedIn truthy? If yes, assign page to DashboardPage.  If no, assign page to LoginPage.
   const page = isLoggedIn ? <DashboardPage /> : <LoginPage />;
@@ -13,7 +13,6 @@ function App() {
   // Render the page within a div
   return (
     <div className = "App">
-      <h1> 'Ello govnuh </h1>
       { page }
     </div>
   )
