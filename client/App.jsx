@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 
 function App() {
   // declare initial state and assign to 'false' using useState hook
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Will check to see if user is logged in
