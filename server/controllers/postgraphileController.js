@@ -8,8 +8,8 @@ app.use(postgraphile(
   'public', // schema name or array of schema names
   {
     watchPg: true,
-    graphiql: true,
-    enhanceGraphiql: true,
+    graphiql: true, // allows you to use graphQL with whatever db you're using
+    enhanceGraphiql: true, // gives us more features 
   }
 ));
 

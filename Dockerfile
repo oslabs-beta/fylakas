@@ -68,3 +68,5 @@ EXPOSE 3000
 
 # Run the application.
 CMD npm start
+
+# docker run -p <host_port>:<container_port> <image_name>
