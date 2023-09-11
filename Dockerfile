@@ -10,6 +10,7 @@ ARG NODE_VERSION=18.16.1
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
 
+RUN npm install -g nodemon
 # Set working directory for all build stages.
 WORKDIR /usr/src/fylakas
 
