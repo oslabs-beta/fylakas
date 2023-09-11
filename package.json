@@ -6,7 +6,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "start": "NODE_ENV=production nodemon server/server.js",
-    "dev": "concurrently \"nodemon server/server.js\" \"NODE_ENV=development webpack serve --open\""
+    "dev": "concurrently \"nodemon server/server.js\" \"NODE_ENV=development webpack serve --open\" \"node dummy/server/server.js\""
   },
   "author": "",
   "license": "ISC",
