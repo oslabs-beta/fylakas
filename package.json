@@ -29,6 +29,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^0.18.1",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.10.5",
@@ -38,6 +39,7 @@
     "express": "^4.18.2",
     "graphql": "^16.8.0",
     "jsonwebtoken": "^9.0.2",
+    "kubernetes-client": "^9.0.0",
     "mongoose": "^7.5.1",
     "pg": "^8.11.3",
     "postgraphile": "^4.13.0",
