@@ -25,7 +25,7 @@ authController.handleUserDetails = async (req, res, next) => {
     if (res.locals.valid) res.locals.hpassword = await bcrypt.hash(password, WORKFACTOR);
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured handling user details.'}});
+    next({log: err, message: {err: 'Error occurred handling user details.'}});
   }
 }
 
@@ -48,7 +48,7 @@ authController.login = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured in login.'}});
+    next({log: err, message: {err: 'Error occurred in login.'}});
   }
 }
 
@@ -80,7 +80,7 @@ authController.signup = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured in signup.'}});
+    next({log: err, message: {err: 'Error occurred in signup.'}});
   }
 }
 
@@ -104,23 +104,42 @@ authController.startSession = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured starting user session.'}});
+    next({log: err, message: {err: 'Error occurred starting user session.'}});
   }
 }
 
 authController.isLoggedIn = async (req, res, next) => {
   try {
-    res.locals.loggedIn = true;
-    const payload = await jwt.verify(req.cookies.jwt, authKey);
+    console.log(`Checking cookies.`);
+    res.locals.isLoggedIn = true;
+    let payload;
+    try {
+      payload = await jwt.verify(req.cookies.jwt, AUTHKEY);
+    } catch (err) {
+      payload = {username: null};
+      console.log('Rejected cookie.')
+    }
     res.locals.username = payload.username;
     const matchedAccounts = await db.query(
       `SELECT username FROM public.users WHERE username = '${payload.username}';`
     );
     if (!matchedAccounts.rows[0]) {
-      res.locals.loggedIn = false;
+      res.locals.isLoggedIn = false;
+    } else {
+      res.locals.username = matchedAccounts.rows[0].username;
     }
+    next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured checking user credentials.'}})
+    next({log: err, message: {err: 'Error occurred checking user credentials.'}})
+  }
+}
+
+authController.logout = async (req, res, next) => {
+  try {
+    res.clearCookie('jwt');
+    return next();
+  } catch (err) {
+    next({log: err, message: {err: 'Error occurred while logging out.'}})
   }
 }
 
