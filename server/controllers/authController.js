@@ -31,12 +31,17 @@ authController.handleUserDetails = async (req, res, next) => {
 
 authController.login = async (req, res, next) => {
   try {
-    const { username } = req.body;
+    const { username, password } = req.body;
     const { valid, hpassword } = res.locals;
     if (valid) {
       console.log(`Making login request with username "${username}".`)
-      // Reject login if username/password do not match an entry in the users table
-      if (false /*logic*/) {
+      const user = await db.query(
+        `SELECT username, hash_id, password FROM public.users WHERE username='${username}';`
+      );
+      if (user.rows[0] && await bcrypt.compare(password, user.rows[0].password)) {
+        console.log(`Succesfully verified login details for "${username}".`)
+        res.locals.id = user.rows[0].hash_id;
+      } else {
         console.log('Username or password is incorrect.');
         res.locals.valid = false;
       }
@@ -53,15 +58,24 @@ authController.signup = async (req, res, next) => {
     const { valid, hpassword } = res.locals;
     if (valid) {
       console.log(`Making signup request with username "${username}".`)
-      // Reject signup if username already exists in the users table
-      if (false /*logic*/) {
+      const matchedUsernames = await db.query(
+        `SELECT * FROM public.users WHERE username = '${username}';`
+      );
+      if (matchedUsernames.rows[0]) {
         console.log(`Username "${username}" already exists.`);
         res.locals.valid = false;
       } else {
         console.log(`Creating new account in database for "${username}".`);
-        const query = `INSERT INTO public.users (username, password) VALUES ('${username}', '${hpassword}') RETURNING user_id;`;
-        const newUserId = await db.query(query);
-        res.locals.id = {id: newUserId};
+        const insertedUser = await db.query(
+          `INSERT INTO public.users (username, password)
+          VALUES ('${username}', '${hpassword}') RETURNING user_id;`
+        );
+        const newUserId = insertedUser.rows[0].user_id.toString();
+        const hashID = await bcrypt.hash(newUserId, WORKFACTOR);
+        await db.query(
+          `UPDATE public.users SET hash_id = '${hashID}' WHERE user_id = '${newUserId}'`
+        );
+        res.locals.id = hashID;
       }
     }
     next();
@@ -76,8 +90,13 @@ authController.startSession = async (req, res, next) => {
     const { valid, id } = res.locals;
     if (valid) {
       console.log(`Starting session for username "${username}".`);
-      // Get relevant profile data for account.
-      clusters = 'mock cluster data';
+      const token = jwt.sign({username: req.body.username}, AUTHKEY, {
+        expiresIn: '3600s'
+      });
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+      })
       res.locals.profile = {id: id};
     } else {
       console.log(`Refusing to start session for ${username}.`);
@@ -86,6 +105,22 @@ authController.startSession = async (req, res, next) => {
     next();
   } catch (err) {
     next({log: err, message: {err: 'Error occured starting user session.'}});
+  }
+}
+
+authController.isLoggedIn = async (req, res, next) => {
+  try {
+    res.locals.loggedIn = true;
+    const payload = await jwt.verify(req.cookies.jwt, authKey);
+    res.locals.username = payload.username;
+    const matchedAccounts = await db.query(
+      `SELECT username FROM public.users WHERE username = '${payload.username}';`
+    );
+    if (!matchedAccounts.rows[0]) {
+      res.locals.loggedIn = false;
+    }
+  } catch (err) {
+    next({log: err, message: {err: 'Error occured checking user credentials.'}})
   }
 }
 
