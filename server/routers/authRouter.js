@@ -18,6 +18,12 @@ router.post(
   authController.signup,
   authController.startSession,
   (req, res) => {res.status(200).json({profile: res.locals.profile});
-})
+});
+
+router.get(
+  '/check',
+  authController.isLoggedIn,
+  (req, res) => {res.status(200).json({isLoggedIn: res.locals.isLoggedIn})
+});
 
 module.exports = router; 

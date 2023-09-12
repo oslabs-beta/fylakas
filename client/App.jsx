@@ -9,7 +9,15 @@ function App() {
 
   useEffect(() => {
     // Will check to see if user is logged in
-    console.log('Run login check');
+    fetch('api/auth/check')
+    .then(response => {
+      if (response.ok) return response.json();
+      throw new Error('ERROR: request in App useEffect failed');
+    })
+    .then(response => {
+      console.log(response);
+      if (response.isLoggedIn) setIsLoggedIn(true);
+    })
   }, []);
 
   // Is isLoggedIn truthy? If yes, assign page to DashboardPage.  If no, assign page to LoginPage.

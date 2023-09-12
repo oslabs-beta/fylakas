@@ -110,15 +110,25 @@ authController.startSession = async (req, res, next) => {
 
 authController.isLoggedIn = async (req, res, next) => {
   try {
-    res.locals.loggedIn = true;
-    const payload = await jwt.verify(req.cookies.jwt, authKey);
+    console.log(`Checking cookies.`);
+    res.locals.isLoggedIn = true;
+    let payload;
+    try {
+      payload = await jwt.verify(req.cookies.jwt, AUTHKEY);
+    } catch (err) {
+      payload = {username: null};
+      console.log('Rejected cookie.')
+    }
     res.locals.username = payload.username;
     const matchedAccounts = await db.query(
       `SELECT username FROM public.users WHERE username = '${payload.username}';`
     );
     if (!matchedAccounts.rows[0]) {
-      res.locals.loggedIn = false;
+      res.locals.isLoggedIn = false;
+    } else {
+      res.locals.username = matchedAccounts.rows[0].username;
     }
+    next();
   } catch (err) {
     next({log: err, message: {err: 'Error occured checking user credentials.'}})
   }
