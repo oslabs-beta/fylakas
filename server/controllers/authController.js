@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const db = require('../db/database.js');
 
 const WORKFACTOR = 12;
 const AUTHKEY = 'd433288a-649e-4f57-8786-4824bf35c5e3';
@@ -58,7 +59,9 @@ authController.signup = async (req, res, next) => {
         res.locals.valid = false;
       } else {
         console.log(`Creating new account in database for "${username}".`);
-        // Add new account to database
+        const query = `INSERT INTO public.users (username, password) VALUES ('${username}', '${hpassword}') RETURNING user_id;`;
+        const newUserId = await db.query(query);
+        res.locals.id = {id: newUserId};
       }
     }
     next();
@@ -70,12 +73,12 @@ authController.signup = async (req, res, next) => {
 authController.startSession = async (req, res, next) => {
   try {
     const { username } = req.body;
-    const { valid } = res.locals;
+    const { valid, id } = res.locals;
     if (valid) {
       console.log(`Starting session for username "${username}".`);
       // Get relevant profile data for account.
       clusters = 'mock cluster data';
-      res.locals.profile = {clusters: clusters};
+      res.locals.profile = {id: id};
     } else {
       console.log(`Refusing to start session for ${username}.`);
       res.locals.profile = null;
