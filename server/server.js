@@ -1,5 +1,7 @@
 const path = require("path");
 const express = require("express");
+const cookieParser = require('cookie-parser');
+
 const app = express();
 const PORT = 3000;
 
@@ -12,7 +14,9 @@ const authRouter = require("./routers/authRouter.js");
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/build', express.static(path.resolve(__dirname, '../build')))
+app.use(cookieParser());
+
+app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));

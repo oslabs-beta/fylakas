@@ -56,6 +56,7 @@ const LoginBox = ({ routeToSignupPage, logIn }) => {
         <h3>Password</h3>
         {passwordErrorBox}
         <input
+          type='password'
           value={passwordField}
           placeholder='Password'
           onChange={(e) => setPasswordField(e.target.value)}
