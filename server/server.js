@@ -4,7 +4,6 @@ const app = express();
 const PORT = 3000;
 
 // routers here
-
 const authRouter = require("./routers/authRouter.js");
 
 /**
@@ -18,6 +17,7 @@ app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 
+// paths to routers here
 app.use('/api/auth', authRouter);
 
 // catch-all route handler for any requests to an unknown route
