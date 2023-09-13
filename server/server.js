@@ -6,10 +6,11 @@ const app = express();
 const PORT = 3000;
 
 // routers here
-
 const authRouter = require("./routers/authRouter.js");
 const clusterRouter = require("./routers/clusterRouter.js");
 
+// NEED TO REQUIRE k8s ROUTER STILL
+const k8srouter = require("./routers/K8srouter.js");
 /**
  * handle parsing request body
  */
@@ -23,8 +24,10 @@ app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 
+// paths to routers here
 app.use('/api/auth', authRouter);
 app.use('/api/cluster', clusterRouter);
+app.use('/api/k8s', k8srouter);
 
 // catch-all route handler for any requests to an unknown route
 app.use('*', (req, res) => res.status(404).send('This is not the page you\'re looking for...'));
