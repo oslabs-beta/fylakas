@@ -43,8 +43,8 @@ const SignupBox = ({ routeToLoginPage, logIn }) => {
   }
 
   return (
-    <div id='signupBox'>
-      <h2>Signup Box</h2>
+    <div id='signupBox' className="d-flex justify-content-center align-items-center py-4 bg-body-tertiary" style={{ height: '100vh', width: '100vw' }}>
+      <div className="form-signin text-center">
       <form>
         <h3>Username</h3>
         {usernameErrorBox}
@@ -62,9 +62,12 @@ const SignupBox = ({ routeToLoginPage, logIn }) => {
           placeholder='Password'
           onChange={(e) => setPasswordField(e.target.value)}
         ></input>
-        <button onClick = {signUp}>Sign Up</button>
       </form>
+      <div>
+      <button className = "mt-2" onClick = {signUp}>Sign Up</button>
       <button onClick = {routeToLoginPage}>Already have an account?</button>
+      </div>
+      </div>
     </div>
   )
 }
