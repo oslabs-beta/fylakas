@@ -11,8 +11,9 @@ k8srouter.get(
   k8sController.getServices,
   k8sController.getDeployments,
   k8sController.getCluster,
+  k8sController.allocatableCapacity,
   async (_, res) => {
-    console.log(res.locals.cluster);
+    // console.log(res.locals.cluster.nodes);
     return res.status(200).json(res.locals.cluster);
   },
 );

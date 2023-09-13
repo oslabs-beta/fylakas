@@ -42,29 +42,33 @@ const LoginBox = ({ routeToSignupPage, logIn }) => {
   }
 
   return (
-    <div id='loginBox'>
-      <h2>Login Box</h2>
-      <form>
-        {usernameErrorBox}
-        {loginErrorBox}
-        <h3>Username</h3>
-        <input
-          value={usernameField}
-          placeholder='Username'
-          onChange={(e) => setUsernameField(e.target.value)}
-        ></input>
-        <h3>Password</h3>
-        {passwordErrorBox}
-        <input
-          type='password'
-          value={passwordField}
-          placeholder='Password'
-          onChange={(e) => setPasswordField(e.target.value)}
-        ></input>
-        <button onClick = {checkLogIn}>Log In</button>
-      </form>
-      <button onClick = {routeToSignupPage}>Create new account?</button>
+    <div id='loginBox' className="d-flex justify-content-center align-items-center py-4 bg-body-tertiary" style={{ height: '100vh', width: '100vw' }}>
+      <div className="form-signin text-center">
+        <form>
+          <h1 className="h3 mb-2 fw-normal">Welcome Aboard</h1>
+          <div className="form-floating">
+            {usernameErrorBox}
+            {loginErrorBox}
+            <input
+              value={usernameField}
+              placeholder='Username'
+              onChange={(e) => setUsernameField(e.target.value)}
+            ></input>
+          </div>
+          <div className="form-floating">
+            {passwordErrorBox}
+            <input
+              type='password'
+              value={passwordField}
+              placeholder='Password'
+              onChange={(e) => setPasswordField(e.target.value)}
+            ></input>
+          </div>
+        </form>
+        <button className = "mt-2" onClick = {checkLogIn}>Log In</button>
+        <button onClick = {routeToSignupPage}>Create new account</button>
     </div>
+      </div>
   )
 }
 
