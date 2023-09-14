@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar.jsx'
 import ClusterHealthHeader from './ClusterHealthHeader.jsx';
 import VisualizerBox from './VisualizerBox.jsx';
+import PageMode from './PageMode.jsx';
 
 
 const DashboardPage = (props) => {
@@ -14,15 +15,18 @@ const DashboardPage = (props) => {
         <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Fylakas</a>
         <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-end" href="#">Log Out</a>
       </header>
-      <div className ="container-fluid">
-      <div className ="row">
-        {<Sidebar />}
-        <div className = "col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        {<ClusterHealthHeader/>}
-        {<VisualizerBox/>}
+      <div className="container-fluid">
+        <div className="row">
+          {<Sidebar />}
+          <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          {<ClusterHealthHeader/>}
+          {<VisualizerBox/>}
+          </div>
         </div>
       </div>
-    </div>
+      <div className="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        {<PageMode/>}
+      </div>
     </div>
   )
 }
