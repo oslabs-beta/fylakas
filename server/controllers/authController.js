@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const db = require('../db/database.js');
 
 const WORKFACTOR = 12;
 const AUTHKEY = 'd433288a-649e-4f57-8786-4824bf35c5e3';
@@ -24,25 +25,30 @@ authController.handleUserDetails = async (req, res, next) => {
     if (res.locals.valid) res.locals.hpassword = await bcrypt.hash(password, WORKFACTOR);
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured handling user details.'}});
+    next({log: err, message: {err: 'Error occurred handling user details.'}});
   }
 }
 
 authController.login = async (req, res, next) => {
   try {
-    const { username } = req.body;
+    const { username, password } = req.body;
     const { valid, hpassword } = res.locals;
     if (valid) {
       console.log(`Making login request with username "${username}".`)
-      // Reject login if username/password do not match an entry in the users table
-      if (false /*logic*/) {
+      const user = await db.query(
+        `SELECT username, hash_id, password FROM public.users WHERE username='${username}';`
+      );
+      if (user.rows[0] && await bcrypt.compare(password, user.rows[0].password)) {
+        console.log(`Succesfully verified login details for "${username}".`)
+        res.locals.id = user.rows[0].hash_id;
+      } else {
         console.log('Username or password is incorrect.');
         res.locals.valid = false;
       }
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured in login.'}});
+    next({log: err, message: {err: 'Error occurred in login.'}});
   }
 }
 
@@ -52,37 +58,88 @@ authController.signup = async (req, res, next) => {
     const { valid, hpassword } = res.locals;
     if (valid) {
       console.log(`Making signup request with username "${username}".`)
-      // Reject signup if username already exists in the users table
-      if (false /*logic*/) {
+      const matchedUsernames = await db.query(
+        `SELECT * FROM public.users WHERE username = '${username}';`
+      );
+      if (matchedUsernames.rows[0]) {
         console.log(`Username "${username}" already exists.`);
         res.locals.valid = false;
       } else {
         console.log(`Creating new account in database for "${username}".`);
-        // Add new account to database
+        const insertedUser = await db.query(
+          `INSERT INTO public.users (username, password)
+          VALUES ('${username}', '${hpassword}') RETURNING user_id;`
+        );
+        const newUserId = insertedUser.rows[0].user_id.toString();
+        const hashID = await bcrypt.hash(newUserId, WORKFACTOR);
+        await db.query(
+          `UPDATE public.users SET hash_id = '${hashID}' WHERE user_id = '${newUserId}'`
+        );
+        res.locals.id = hashID;
       }
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured in signup.'}});
+    next({log: err, message: {err: 'Error occurred in signup.'}});
   }
 }
 
 authController.startSession = async (req, res, next) => {
   try {
     const { username } = req.body;
-    const { valid } = res.locals;
+    const { valid, id } = res.locals;
     if (valid) {
       console.log(`Starting session for username "${username}".`);
-      // Get relevant profile data for account.
-      clusters = 'mock cluster data';
-      res.locals.profile = {clusters: clusters};
+      const token = jwt.sign({username: req.body.username}, AUTHKEY, {
+        expiresIn: '3600s'
+      });
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+      })
+      res.locals.profile = {id: id};
     } else {
       console.log(`Refusing to start session for ${username}.`);
       res.locals.profile = null;
     }
     next();
   } catch (err) {
-    next({log: err, message: {err: 'Error occured starting user session.'}});
+    next({log: err, message: {err: 'Error occurred starting user session.'}});
+  }
+}
+
+authController.isLoggedIn = async (req, res, next) => {
+  try {
+    console.log(`Checking cookies.`);
+    res.locals.isLoggedIn = true;
+    let payload;
+    try {
+      payload = await jwt.verify(req.cookies.jwt, AUTHKEY);
+    } catch (err) {
+      payload = {username: null};
+      console.log('Rejected cookie.')
+    }
+    res.locals.username = payload.username;
+    const matchedAccounts = await db.query(
+      `SELECT username FROM public.users WHERE username = '${payload.username}';`
+    );
+    if (!matchedAccounts.rows[0]) {
+      res.locals.isLoggedIn = false;
+    } else {
+      res.locals.username = matchedAccounts.rows[0].username;
+    }
+    next();
+  } catch (err) {
+    next({log: err, message: {err: 'Error occurred checking user credentials.'}})
+  }
+}
+
+authController.logout = async (req, res, next) => {
+  try {
+    res.clearCookie('jwt');
+    return next();
+  } catch (err) {
+    next({log: err, message: {err: 'Error occurred while logging out.'}})
   }
 }
 

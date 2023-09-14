@@ -5,11 +5,19 @@ import { createRoot } from 'react-dom/client';
 
 function App() {
   // declare initial state and assign to 'false' using useState hook
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Will check to see if user is logged in
-    console.log('Run login check');
+    fetch('api/auth/check')
+    .then(response => {
+      if (response.ok) return response.json();
+      throw new Error('ERROR: request in App useEffect failed');
+    })
+    .then(response => {
+      console.log(response);
+      if (response.isLoggedIn) setIsLoggedIn(true);
+    })
   }, []);
 
   // Is isLoggedIn truthy? If yes, assign page to DashboardPage.  If no, assign page to LoginPage.
