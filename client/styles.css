@@ -18,14 +18,14 @@
     background-color: #333333; /* Dark mode background color */
 }
 
-/* Define the styles for the dropdown and menu */
+/* Define the styles for the dropdown and menu
 #bd-theme {
     /* Add your styles for the button here */
-}
+/* } */
 
-#bd-theme-text::after {
+/* #bd-theme-text::after { */
     /* Add any styles for the icon after the text here */
-}
+/* } */
 
 .dropdown-menu {
     /* Add styles for the dropdown menu here */
