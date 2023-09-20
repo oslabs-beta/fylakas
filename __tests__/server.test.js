@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../server/server');
+const { app, server } = require('../server/server'); // Import both app and server
 
 describe('Server Routes', () => {
   describe('GET /', () => {
@@ -17,4 +17,8 @@ describe('Server Routes', () => {
       expect(response.text).toBe("This is not the page you're looking for...");
     });
   });
+});
+
+afterAll((done) => {
+  server.close(done);
 });
