@@ -6,7 +6,13 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "start": "NODE_ENV=production nodemon server/server.js",
-    "dev": "concurrently \"nodemon server/server.js\" \"NODE_ENV=development webpack serve --open\" "
+    "dev": "concurrently \"nodemon server/server.js\" \"NODE_ENV=development webpack serve --open\" ",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/__tests__/**/?(*.)+(spec|test).[tj]s?(x)"]
+  },
   },
   "author": "",
   "license": "ISC",
