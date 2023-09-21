@@ -2,7 +2,7 @@ const request = require('supertest');
 const express = require('express');
 const { server } = require('../server/server');
 const authRouter = require('../server/routers/authRouter');
-const db = require('../db/database.js'); // Importing the pool to then close it in after all
+const db = require('../server/db/database.js'); // Importing the pool to then close it in after all
 
 const app = express();
 app.use(express.json());
@@ -21,8 +21,7 @@ describe('Auth Routes', () => {
   });
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   server.close();
   await db.end(); // Close the pool
-  done();
 });
