@@ -3,6 +3,11 @@ const path = require('path');
 
 module.exports = {
   devServer: {
+    //Chris added this serve for static files because webpack doesn't bundle on it's own?
+    static: { 
+      directory: path.resolve(__dirname, './assets'), 
+      publicPath: '/assets'
+    },
     proxy: {
       '/api': 'http://localhost:3000'
     },
@@ -30,9 +35,8 @@ module.exports = {
         },
       },
       {
-        // test: /.s?[ac]ss$/i,
+        test: /.s?[ac]ss$/i,
         // test: /\.s?css/,
-        test: /\.css$/,
         exclude: /node_modules/,
         use: [
           'style-loader',
@@ -41,8 +45,8 @@ module.exports = {
         ],
       },
       {
-        // test: /\.(png|jpe?g|gif)$/i,
-        test: /\.png/i,
+        test: /\.(png|jpe?g|gif)$/i,
+        // test: /\.png/i,
         use: [
             {
                 loader: 'file-loader',

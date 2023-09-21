@@ -45,7 +45,7 @@ const LoginBox = ({ routeToSignupPage, logIn }) => {
     <div id='loginBox' className="d-flex justify-content-center align-items-center py-4 bg-body-tertiary" style={{ height: '100vh', width: '100vw' }}>
       <div className="form-signin text-center">
         <form>
-          <img className="mb-4" src="../assets/fylakas-logo-export.png" alt width="80" height="100"></img>
+          <img className="mb-4" src="/assets/fylakas-logo-export.png" alt width="80" height="100"></img>
           <h1 className="h3 mb-2 fw-normal">Welcome Aboard</h1>
           <div className="form-floating">
             {usernameErrorBox}
