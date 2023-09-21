@@ -3,8 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 
 const app = express();
-const PORT = 3000;
-
+const PORT = process.env.PORT || 3000; // Default to 3000 if no environment variable is set
 // routers here
 const authRouter = require('./routers/authRouter.js');
 const clusterRouter = require('./routers/clusterRouter.js');
@@ -50,8 +49,11 @@ app.use((err, req, res, next) => {
  * start server
  */
 
-const server = app.listen(PORT, () => {
-  console.log(`Server listening on port: ${PORT}...`);
-});
+let server;
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`Server listening on port: ${PORT}...`);
+  });
+}
 
 module.exports = { app, server };

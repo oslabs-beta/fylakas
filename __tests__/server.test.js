@@ -1,5 +1,12 @@
 const request = require('supertest');
-const { app, server } = require('../server/server'); // Import both app and server
+const { app } = require('../server/server');
+let server; // Declare server variable
+
+beforeAll(() => {
+  process.env.PORT = 3000;
+  const serverModule = require('../server/server');
+  server = serverModule.server || serverModule.app.listen(process.env.PORT); // Start the server here if it hasn't started yet
+});
 
 describe('Server Routes', () => {
   describe('GET /', () => {
@@ -20,5 +27,5 @@ describe('Server Routes', () => {
 });
 
 afterAll((done) => {
-  server.close(done);
+  if (server) server.close(done); // Close the server after all tests
 });
