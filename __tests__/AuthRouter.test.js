@@ -1,6 +1,8 @@
 const request = require('supertest');
 const express = require('express');
-const authRouter = require('../server/routers/authRouter'); // adjust path to your router file
+const { server } = require('../server/server');
+const authRouter = require('../server/routers/authRouter');
+const db = require('../db/database.js'); // Importing the pool to then close it in after all
 
 const app = express();
 app.use(express.json());
@@ -15,7 +17,12 @@ describe('Auth Routes', () => {
         .send({ username: 'testuser', password: 'testpassword' }); // Adjust with actual credentials
       expect(response.statusCode).toBe(200);
       expect(response.body.profile).toBeDefined();
-      // Other assertions as necessary...
     });
   });
+});
+
+afterAll(async (done) => {
+  server.close();
+  await db.end(); // Close the pool
+  done();
 });
