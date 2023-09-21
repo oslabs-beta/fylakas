@@ -30,8 +30,9 @@ module.exports = {
         },
       },
       {
-        test: /.s?[ac]ss$/i,
+        // test: /.s?[ac]ss$/i,
         // test: /\.s?css/,
+        test: /\.css$/,
         exclude: /node_modules/,
         use: [
           'style-loader',
@@ -40,7 +41,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        // test: /\.(png|jpe?g|gif)$/i,
+        test: /\.png/i,
         use: [
             {
                 loader: 'file-loader',
