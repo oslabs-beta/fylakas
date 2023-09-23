@@ -69,6 +69,7 @@ k8sController.getPods = async (req, res, next
   try {
     // Fetch pod data from the Kubernetes API
     const data = await k8sApi.listPodForAllNamespaces();
+    // console.log('pod namespace items', data.body.items);
 
     // Process the fetched data and map it to an array of Pod objects
     const pods = data.body.items.map(data => {
@@ -186,6 +187,7 @@ k8sController.getDeployments = async (req, res, next
 ) => {
   try {
     const data = await k8sApi2.listDeploymentForAllNamespaces();
+    // console.log('deployment data', data);
 
     const deployments = data.body.items.map(data => {
       const { name, creationTimestamp, labels, namespace, uid } = data.metadata;
@@ -256,14 +258,15 @@ k8sController.getCluster = async (req, res, next
   }
 };
 
-k8sController.allocatableCapacity = async(req, res, next) => {
+// this middleware is for node usage (CPU, memory, pods, images)
+k8sController.nodeStatus = async(req, res, next) => {
   try {
     // Fetch node information from the Kubernetes API
     const data = await k8sApi.listNode();
     // map data to find the status properties (allocatable, capacity, images) with cpu and memory for each 
     const nodeUsageData = data.body.items.map(data => {
       const { creationTimestamp } = data.metadata;  
-      console.log('creationTimestamp', creationTimestamp);
+      // console.log('creationTimestamp', creationTimestamp);
       const { allocatable, capacity, images } = data.status;
       //const timeStamp = creationTimestamp;
       const usage = {
@@ -272,19 +275,56 @@ k8sController.allocatableCapacity = async(req, res, next) => {
         capacity,
         images
       };
-      console.log('this is usage', usage);
+      // console.log('this is usage', usage);
       return usage;
     });
-    res.locals.usage = nodeUsageData;
-    console.log('this is nodeUsageData in allocatableCapacity controller', nodeUsageData);
+    res.locals.nodeUsage = nodeUsageData;
+    console.log('this is nodeUsageData in nodeStatus controller', nodeUsageData);
     return next();
   } catch(err) {
     return next({
-      log: 'Error caught in k8sController allocatableCapacity',
+      log: 'Error caught in k8sController nodeStatus middleware',
       err,
       status: 400, 
       message: {
-        err: `An error occurred when fetching usage info from the k8sApi. Error: ${err.message}`
+        err: `An error occurred when fetching node status info from the k8sApi. Error: ${err.message}`
+      }
+    });
+  }
+}
+
+// this middleware is for pod usage (CPU, memory, container stats)
+k8sController.podStatus = async (req, res, next) => {
+  console.log('in the podStatus middleware');
+  //console.log(k8sApi);
+  try {
+    // Fetch pod data from the Kubernetes API
+    const data = res.locals.cluster;
+    // console.log('data in podStatus', data);
+    const podUsageData = data.pods.map(data => {
+      // destructure data to include metrics we want (timestamp from metadata)
+      const { namespace, creationTimestamp, containers, phase } = data;
+      // declare object called usage assigned to metrics we're grabbing
+      const podUsage = {
+        namespace,
+        creationTimestamp,
+        containers, 
+        phase,
+      };
+      // return usage 
+      return podUsage;
+    });
+    // assign res.locals.podUsage to podUsageData
+    res.locals.podUsage = podUsageData;
+    // console.log('this is podUsageData', podUsageData);
+    return next();
+  } catch (err) {
+    return next({
+      log: 'Error caught in k8sController podStatus middleware',
+      err,
+      status: 400, 
+      message: {
+        err: `An error occurred when fetching pod status info from the k8sApi. Error: ${err.message}`
       }
     });
   }
@@ -293,7 +333,7 @@ k8sController.allocatableCapacity = async(req, res, next) => {
 module.exports = k8sController;
 
 /*
-
+this is output of GET to localhost:3000/api/k8s/cluster
 {
     "nodes": [
         {
