@@ -4,10 +4,14 @@ const authController = require('../controllers/authController.js');
 
 const promRouter = express.Router();
 
-promRouter.use(authController.isLoggedIn);
+// promRouter.use(authController.isLoggedIn);
 
-promRouter.get(
+promRouter.post(
   '/metrics',
+  (req, res, next) => {
+    console.log('in');
+    next();
+  },
   PromController.getDate,
   PromController.cpuUsageByContainer,
   PromController.memoryUsageByContainer,
