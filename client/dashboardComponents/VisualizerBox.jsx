@@ -68,15 +68,12 @@ const VisualizerBox = ({ cluster }) => {
   const dates = liveData.map((datapoint) => datapoint.date);
 
   return (
-    <div className='card mb-4 rounded-3 shadow-sm'>
-      <div className='d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom'>
-        <div className='col-md-3 mb-2 mb-md-0'></div>
-        <h4 className='nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal'>
-          {' '}
-          Display Options
-        </h4>
-        <div className='col-md-3 text-end'>
-          <button className='btn btn-primary py-2 me-2'>Metrics</button>
+    <div className="card mb-4 rounded-3 shadow-sm">
+      <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <div className="col-md-3 mb-2 mb-md-0"></div>
+        <h4 className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal"> Display Options</h4>
+        <div className="col-md-3 text-end">
+          <button className="btn btn-primary py-2 me-2">Connect</button>
         </div>
       </div>
       <div className='card-body'>
