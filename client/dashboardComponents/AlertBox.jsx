@@ -1,13 +1,13 @@
 import React from 'react';
 
-const ErrorBox = () => {
+const AlertBox = () => {
 
   return (
     <a className="nav-link d-flex align-items-center gap-2" href="#">
-      <i class="bi bi-bug-fill"></i>
-      Errors
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      Alerts
     </a>
   );
 };
 
-export default ErrorBox;
+export default AlertBox;
