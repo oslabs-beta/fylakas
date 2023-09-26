@@ -1,22 +1,21 @@
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
-
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css');
 
 .row {
-    --bs-gutter-x: 1.5rem;
-    --bs-gutter-y: 0;
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: calc(-1 * var(--bs-gutter-y));
-    margin-right: calc(-.5 * var(--bs-gutter-x));
-    margin-left: calc(-.5 * var(--bs-gutter-x));
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
 }
 
 :root[data-theme='light'] {
-    background-color: #ffffff; /* Light mode background color */
+  background-color: #ffffff; /* Light mode background color */
 }
-  
+
 :root[data-theme='dark'] {
-    background-color: #333333; /* Dark mode background color */
+  background-color: #333333; /* Dark mode background color */
 }
 
 /* Define the styles for the dropdown and menu
@@ -25,36 +24,36 @@
 /* } */
 
 /* #bd-theme-text::after { */
-    /* Add any styles for the icon after the text here */
+/* Add any styles for the icon after the text here */
 /* } */
 
 .dropdown-menu {
-    /* Add styles for the dropdown menu here */
-    --bs-dropdown-bg: #4a90e2;
-    --bs-dropdown-link-active-bg: #357ca5;
+  /* Add styles for the dropdown menu here */
+  --bs-dropdown-bg: #4a90e2;
+  --bs-dropdown-link-active-bg: #357ca5;
 }
 
 /* Define styles for each theme using the data-bs-theme attribute */
 [data-bs-theme='light'] {
-    background-color: #ffffff; /* Light mode background color */
+  background-color: #ffffff; /* Light mode background color */
 }
 
 [data-bs-theme='dark'] {
-    background-color: #333333; /* Dark mode background color */
+  background-color: #333333; /* Dark mode background color */
 }
 
 .btn-bd-primary {
-    --bd-violet-bg: #712cf9;
-    --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-    --bs-btn-font-weight: 600;
-    --bs-btn-color: var(--bs-white);
-    --bs-btn-bg: var(--bd-violet-bg);
-    --bs-btn-border-color: var(--bd-violet-bg);
-    --bs-btn-hover-color: var(--bs-white);
-    --bs-btn-hover-bg: #6528e0;
-    --bs-btn-hover-border-color: #6528e0;
-    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-    --bs-btn-active-color: var(--bs-btn-hover-color);
-    --bs-btn-active-bg: #5a23c8;
-    --bs-btn-active-border-color: #5a23c8;
+  --bd-violet-bg: #712cf9;
+  --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-white);
+  --bs-btn-bg: var(--bd-violet-bg);
+  --bs-btn-border-color: var(--bd-violet-bg);
+  --bs-btn-hover-color: var(--bs-white);
+  --bs-btn-hover-bg: #6528e0;
+  --bs-btn-hover-border-color: #6528e0;
+  --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+  --bs-btn-active-color: var(--bs-btn-hover-color);
+  --bs-btn-active-bg: #5a23c8;
+  --bs-btn-active-border-color: #5a23c8;
 }

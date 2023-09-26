@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar.jsx'
+import Sidebar from './Sidebar.jsx';
 import ClusterHealthHeader from './ClusterHealthHeader.jsx';
 import VisualizerBox from './VisualizerBox.jsx';
 import PageMode from './PageMode.jsx';
 
-
-const DashboardPage = ({logOut}) => {
+const DashboardPage = ({ logOut }) => {
   // declare initial state of our webpage and assign to 'currentHealth' using useState hook
   const [tabState, setTabState] = useState('currentHealth');
 
   const handleLogOut = () => {
-    fetch('api/auth/logout')
-    .then(response => {
-      if (response.ok) logOut();
-      else throw new Error('ERROR: request failed in handleLogOut');
-    })
-    .catch(err => console.log(err));
+    fetch('api/auth/logout', {})
+      .then((response) => {
+        if (response.ok) logOut();
+        else throw new Error('ERROR: request failed in handleLogOut');
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -27,12 +26,12 @@ const DashboardPage = ({logOut}) => {
           Log Out
         </a>
       </header>
-      <div className="container-fluid">
-        <div className="row">
+      <div className='container-fluid'>
+        <div className='row'>
           {<Sidebar />}
-          <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          {<ClusterHealthHeader/>}
-          {<VisualizerBox/>}
+          <div className='col-md-9 ms-sm-auto col-lg-10 px-md-4'>
+            {<ClusterHealthHeader />}
+            {<VisualizerBox />}
           </div>
         </div>
       </div>
@@ -40,7 +39,7 @@ const DashboardPage = ({logOut}) => {
         {<PageMode/>}
       </div> */}
     </div>
-  )
+  );
 };
 
 export default DashboardPage;
