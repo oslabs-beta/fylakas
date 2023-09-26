@@ -8,6 +8,7 @@ promRouter.use(authController.isLoggedIn);
 
 promRouter.post(
   '/metrics',
+  PromController.getEndpoint,
   PromController.getDate,
   PromController.cpuUsageByContainer,
   PromController.memoryUsageByContainer,

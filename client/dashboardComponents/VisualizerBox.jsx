@@ -5,7 +5,7 @@ import ConnectionModal from './Connection.jsx';
 // Number of points of data to display per graph
 const range = 60;
 // Use dummy data instead of requesting prometheus to test charts
-const dummyData = true;
+const dummyData = false;
 
 const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
@@ -58,13 +58,14 @@ const VisualizerBox = ({ cluster }) => {
         })
           .then((response) => {
             if (response.ok) return response.json();
-            newData.push({
-              date: date,
+            console.log(liveData.length);
+            return {
+              date: zeroedDate(),
               cpu: liveData[range].cpu,
               mem: liveData[range].mem,
               net: liveData[range].net,
               disk: liveData[range].disk,
-            })
+            }
           })
           .then((response) => {
             if (!response.cpu) response.cpu = liveData[range].cpu;
@@ -77,7 +78,7 @@ const VisualizerBox = ({ cluster }) => {
       }
       while (newData.length > range + 1) newData.shift();
       setLiveData(newData);
-    }, 1000);
+    }, 15000);
   }, [liveData]);
 
   const dates = liveData.map((datapoint) => datapoint.date);
