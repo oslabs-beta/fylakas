@@ -1,59 +1,109 @@
 import React, { useEffect, useState } from 'react';
 import VisualizationItem from './visualizerComponents/VisualizationItem.jsx';
 
-const VisualizerBox = () => {
+// Number of points of data to display per graph
+const range = 60;
+// Use dummy data instead of requesting prometheus to test charts
+const dummyData = true;
 
-  const zeroedDate = () => {
-    const date = new Date();
-    const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
-    const zeroedTimePieces = timePieces.map(timePiece => {
-      return timePiece < 10 ? '0' + timePiece.toString() : timePiece.toString();
-    }) 
-    return `${zeroedTimePieces[0]}:${zeroedTimePieces[1]}:${zeroedTimePieces[2]}`;
-  }
+const zeroedDate = () => {
+  const date = new Date();
+  const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
+  const zeroedTimePieces = timePieces.map((timePiece) => {
+    return timePiece < 10 ? '0' + timePiece.toString() : timePiece.toString();
+  });
+  return `${zeroedTimePieces[0]}:${zeroedTimePieces[1]}:${zeroedTimePieces[2]}`;
+};
 
-  const convincingRandomDeviation = (num) => {
-    return (((num/100) * 3) + 0.1 ** Math.random()) * 25;
-  }
+const convincingRandomDeviation = (num) => {
+  return ((num / 100) * 3 + 0.1 ** Math.random()) * 25;
+};
 
+const VisualizerBox = ({ cluster }) => {
   const initialDate = zeroedDate();
-  const [liveData, setLiveData] = useState(Array(61).fill({date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0}, 0, 61));
+  const [liveData, setLiveData] = useState(
+    Array(range + 1).fill(
+      { date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0 },
+      0,
+      range + 1
+    )
+  );
   console.log(liveData);
 
   useEffect(() => {
-    const timeout = setInterval(() => {
+    const timeout = setTimeout(() => {
       const newData = liveData.slice();
-      if (newData.length > 60) newData.shift();
-      const date = zeroedDate();
-      newData.push({
-        date: date,
-        cpu: convincingRandomDeviation(liveData[60].cpu),
-        mem: convincingRandomDeviation(liveData[60].mem),
-        net: convincingRandomDeviation(liveData[60].net),
-        disk: convincingRandomDeviation(liveData[60].disk),
-      })
+      if (dummyData) {
+        const date = zeroedDate();
+        newData.push({
+          date: date,
+          cpu: convincingRandomDeviation(liveData[range].cpu),
+          mem: convincingRandomDeviation(liveData[range].mem),
+          net: convincingRandomDeviation(liveData[range].net),
+          disk: convincingRandomDeviation(liveData[range].disk),
+        });
+      } else {
+        fetch('api/prom/metrics', {
+          body: { cluster: cluster },
+          headers: { 'Content-Type': 'application/json' },
+        })
+          .then((response) => {
+            if (response.ok) return response.json();
+            throw new Error('ERROR: Failed to fetch metrics in VisualizerBox');
+          })
+          .then((response) => {
+            newData.push(response);
+          });
+      }
+      while (newData.length > range + 1) newData.shift();
       setLiveData(newData);
-    }, 1000)
-    return () => {clearTimeout(timeout)};
-  },[liveData])
+    }, 1000);
+  }, [liveData]);
 
-  const dates = liveData.map(datapoint => datapoint.date)
+  const dates = liveData.map((datapoint) => datapoint.date);
 
   return (
-    <div className="card mb-4 rounded-3 shadow-sm">
-      <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-        <div className="col-md-3 mb-2 mb-md-0"></div>
-        <h4 className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal"> Display Options</h4>
-        <div className="col-md-3 text-end">
-          <button className="btn btn-primary py-2 me-2">Metrics</button>
+    <div className='card mb-4 rounded-3 shadow-sm'>
+      <div className='d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom'>
+        <div className='col-md-3 mb-2 mb-md-0'></div>
+        <h4 className='nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal'>
+          {' '}
+          Display Options
+        </h4>
+        <div className='col-md-3 text-end'>
+          <button className='btn btn-primary py-2 me-2'>Metrics</button>
         </div>
       </div>
-      <div className="card-body">
-        <div className="row row-cols-1 row-cols-md-2 mb-2 text-center">
-          {<VisualizationItem name = {'CPU Usage'} dates = {dates} points = {liveData.map(datapoint => datapoint.cpu)}/>}
-          {<VisualizationItem name = {'Memory Usage'} dates = {dates} points = {liveData.map(datapoint => datapoint.mem)}/>}
-          {<VisualizationItem name = {'Network Traffic'} dates = {dates} points = {liveData.map(datapoint => datapoint.net)}/>}
-          {<VisualizationItem name = {'Disk Usage'} dates = {dates} points = {liveData.map(datapoint => datapoint.disk)}/>}
+      <div className='card-body'>
+        <div className='row row-cols-1 row-cols-md-2 mb-2 text-center'>
+          {
+            <VisualizationItem
+              name={'CPU Usage'}
+              dates={dates}
+              points={liveData.map((datapoint) => datapoint.cpu)}
+            />
+          }
+          {
+            <VisualizationItem
+              name={'Memory Usage'}
+              dates={dates}
+              points={liveData.map((datapoint) => datapoint.mem)}
+            />
+          }
+          {/* {
+            <VisualizationItem
+              name={'Network Traffic'}
+              dates={dates}
+              points={liveData.map((datapoint) => datapoint.net)}
+            />
+          } */}
+          {
+            <VisualizationItem
+              name={'Disk Usage'}
+              dates={dates}
+              points={liveData.map((datapoint) => datapoint.disk)}
+            />
+          }
         </div>
       </div>
     </div>

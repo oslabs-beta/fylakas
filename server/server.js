@@ -6,11 +6,10 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Default to 3000 if no environment variable is set
 // routers here
 const authRouter = require('./routers/authRouter.js');
-const clusterRouter = require('./routers/clusterRouter.js');
 
 // NEED TO REQUIRE k8s ROUTER STILL
-const k8srouter = require("./routers/K8srouter.js");
-const promRouter = require("./routers/promRouter.js");
+const k8srouter = require('./routers/K8srouter.js');
+const promRouter = require('./routers/promRouter.js');
 /**
  * handle parsing request body
  */
@@ -18,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use( express.static(path.resolve(__dirname, '../assets')));
+app.use(express.static(path.resolve(__dirname, '../assets')));
 
 app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
@@ -28,7 +27,6 @@ app.get('/', (req, res) => {
 
 // paths to routers here
 app.use('/api/auth', authRouter);
-app.use('/api/cluster', clusterRouter);
 app.use('/api/k8s', k8srouter);
 app.use('/api/prom', promRouter);
 

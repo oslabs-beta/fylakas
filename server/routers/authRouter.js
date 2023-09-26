@@ -28,7 +28,7 @@ router.get('/check', authController.isLoggedIn, (req, res) => {
   res.status(200).json({ isLoggedIn: res.locals.isLoggedIn });
 });
 
-router.post('/logout', authController.logout, (req, res) => {
+router.get('/logout', authController.logout, (req, res) => {
   res.status(200).json({ message: 'Successfully logged out' });
 });
 
