@@ -5,10 +5,9 @@ import ConnectionModal from './Connection.jsx';
 // Number of points of data to display per graph
 const range = 60;
 // Use dummy data instead of requesting prometheus to test charts
-const dummyData = true;
+const dummyData = false;
 
-const zeroedDate = () => {
-  const date = new Date();
+const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
   const zeroedTimePieces = timePieces.map((timePiece) => {
     return timePiece < 10 ? '0' + timePiece.toString() : timePiece.toString();
@@ -45,7 +44,8 @@ const VisualizerBox = ({ cluster }) => {
         });
       } else {
         fetch('api/prom/metrics', {
-          body: { cluster: cluster },
+          method: 'POST',
+          body: JSON.stringify({ cluster: cluster }),
           headers: { 'Content-Type': 'application/json' },
         })
           .then((response) => {
@@ -53,12 +53,17 @@ const VisualizerBox = ({ cluster }) => {
             throw new Error('ERROR: Failed to fetch metrics in VisualizerBox');
           })
           .then((response) => {
+            if (!response.cpu) response.cpu = liveData[range].cpu;
+            if (!response.mem) response.mem = liveData[range].mem;
+            if (!response.net) response.net = liveData[range].net;
+            if (!response.disk) response.disk = liveData[range].disk;
+            response.date = zeroedDate();
             newData.push(response);
           });
       }
       while (newData.length > range + 1) newData.shift();
       setLiveData(newData);
-    }, 1000);
+    }, 15000);
   }, [liveData]);
 
   const dates = liveData.map((datapoint) => datapoint.date);
