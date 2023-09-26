@@ -58,7 +58,13 @@ const VisualizerBox = ({ cluster }) => {
         })
           .then((response) => {
             if (response.ok) return response.json();
-            throw new Error('ERROR: Failed to fetch metrics in VisualizerBox');
+            newData.push({
+              date: date,
+              cpu: liveData[range].cpu,
+              mem: liveData[range].mem,
+              net: liveData[range].net,
+              disk: liveData[range].disk,
+            })
           })
           .then((response) => {
             if (!response.cpu) response.cpu = liveData[range].cpu;
@@ -99,7 +105,7 @@ const VisualizerBox = ({ cluster }) => {
         </div>
       </div>
       <div className='card-body'>
-        <div className='row row-cols-1 row-cols-md-2 mb-2 text-center'>
+        <div className='row row-cols-1 mb-2 text-center'>
           {
             <VisualizationItem
               name={'CPU Usage'}

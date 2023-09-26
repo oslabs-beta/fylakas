@@ -4,14 +4,10 @@ const authController = require('../controllers/authController.js');
 
 const promRouter = express.Router();
 
-// promRouter.use(authController.isLoggedIn);
+promRouter.use(authController.isLoggedIn);
 
 promRouter.post(
   '/metrics',
-  (req, res, next) => {
-    console.log('in');
-    next();
-  },
   PromController.getDate,
   PromController.cpuUsageByContainer,
   PromController.memoryUsageByContainer,
@@ -19,8 +15,16 @@ promRouter.post(
   PromController.diskSpace,
   async (_, res) => {
     // console.log('res.locals.cluster', res.locals.cluster);
-    console.log('sending res.locals.metrics:', res.locals.metrics);
+    console.log(`Sending res.locals.metrics to ${res.locals.username}.`);
     return res.status(200).json(res.locals.metrics);
+  }
+);
+
+promRouter.post(
+  '/endpoint',
+  PromController.addEndpoint,
+  (_, res) => {
+    return res.status(200).json({success: res.locals.success});
   }
 );
 
