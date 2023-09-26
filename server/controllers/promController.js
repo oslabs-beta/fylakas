@@ -51,7 +51,8 @@ PromController.cpuUsageByContainer = async function (req, res, next) {
     );
 
     console.log('data to test:', queryData);
-    res.locals.metrics.cpu = queryData.data.result[0].value[1];
+    if (queryData.data.result[0])
+      res.locals.metrics.cpu = queryData.data.result[0].value[1];
 
     return next();
   } catch (err) {
@@ -91,7 +92,8 @@ PromController.memoryUsageByContainer = async function (req, res, next) {
     const queryData = await response.json();
     // console.log(queryData);
     // assign memoryUsageByContainer as a property on res.locals.metrics assigned to the data received from the fetch
-    res.locals.metrics.mem = queryData.data.result[0].value[1];
+    if (queryData.data.result[0])
+      res.locals.metrics.mem = queryData.data.result[0].value[1];
     return next();
   } catch (err) {
     return next({
@@ -188,14 +190,15 @@ PromController.diskSpace = async function (req, res, next) {
       throw new Error('Response error');
     }
 
-    const queryResult = await response.json();
+    const queryData = await response.json();
     console.log(
       'Data returned from GET request to prometheus server',
-      queryResult
+      queryData
     );
 
     // console.log('data to test:', queryResult);
-    res.locals.metrics.diskSpace = queryResult.data.result[0].value[1];
+    if (queryData.data.result[0])
+      res.locals.metrics.disk = queryData.data.result[0].value[1];
 
     return next();
   } catch (err) {
