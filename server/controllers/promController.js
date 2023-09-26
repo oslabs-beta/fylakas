@@ -2,7 +2,7 @@ const db = require('../db/database.js');
 const PromController = {};
 
 // Prometheus server endpoint
-const prometheusUrl = 'http://localhost:9090'; // Replace with your Prometheus server URL
+// const prometheusUrl = 'http://localhost:9090'; // Replace with your Prometheus server URL
 
 PromController.getEndpoint = async (req, res, next) => {
   const { username } = res.locals;
@@ -15,8 +15,8 @@ PromController.getEndpoint = async (req, res, next) => {
     const endpointQuery = `SELECT prom_url FROM public.clusters WHERE user_id = '${userId}';`;
     const endpoints = await db.query(endpointQuery);
     if (endpoints.rows[0] !== undefined) {
-      res.locals.endpoint = endpoints.rows[endpoints.rows.length - 1].prom_url;
-      console.log(`Fetching data from "${res.locals.endpoint}" for "${username}".`);
+      res.locals.prometheusUrl = endpoints.rows[endpoints.rows.length - 1].prom_url;
+      console.log(`Fetching data from "${res.locals.prometheusUrl}" for "${username}".`);
     } else {
       res.locals.isLoggedIn = false;
       console.log(`Cannot fetch data for "${username}" without a request URL.`);
@@ -46,7 +46,9 @@ PromController.getDate = function (req, res, next) {
 };
 
 PromController.cpuUsageByContainer = async function (req, res, next) {
-  if (!res.locals.isLoggedIn) return next();
+  const {isLoggedIn, prometheusUrl} = res.locals;
+  console.log(prometheusUrl);
+  if (!isLoggedIn) return next();
   console.log('PromController.cpuUsageByContainer middleware invoked');
   // PromQL query
   const query =
@@ -94,7 +96,8 @@ PromController.cpuUsageByContainer = async function (req, res, next) {
 
 // Get memory usage by container and add to the metrics object on res.locals
 PromController.memoryUsageByContainer = async function (req, res, next) {
-  if (!res.locals.isLoggedIn) return next();
+  const {isLoggedIn, prometheusUrl} = res.locals;
+  if (!isLoggedIn) return next();
   // declare specific query for memory usage for each container
   const query =
     '100 * sum(container_memory_usage_bytes) / sum(container_spec_memory_limit_bytes)';
@@ -134,7 +137,8 @@ PromController.memoryUsageByContainer = async function (req, res, next) {
 };
 
 PromController.networkTrafficByContainer = async function (req, res, next) {
-  if (!res.locals.isLoggedIn) return next();
+  const {isLoggedIn, prometheusUrl} = res.locals;
+  if (!isLoggedIn) return next();
   // PromQL queries
   const receiveQuery =
     '(rate(container_network_receive_bytes_total[5m]) / 1e9) * 100';
@@ -196,7 +200,8 @@ PromController.networkTrafficByContainer = async function (req, res, next) {
 };
 
 PromController.diskSpace = async function (req, res, next) {
-  if (!res.locals.isLoggedIn) return next();
+  const {isLoggedIn, prometheusUrl} = res.locals;
+  if (!isLoggedIn) return next();
   //PromQL query for finding free space, gives percentage of available space on a pointed disk
   const query =
     //used disk space
