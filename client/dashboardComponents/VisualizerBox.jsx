@@ -4,7 +4,7 @@ import VisualizationItem from './visualizerComponents/VisualizationItem.jsx';
 // Number of points of data to display per graph
 const range = 60;
 // Use dummy data instead of requesting prometheus to test charts
-const dummyData = false;
+const dummyData = true;
 
 const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
@@ -14,12 +14,20 @@ const zeroedDate = (date = new Date()) => {
   return `${zeroedTimePieces[0]}:${zeroedTimePieces[1]}:${zeroedTimePieces[2]}`;
 };
 
+function subtractMinutes(date) {
+  date.setMinutes(date.getMinutes() - range/4);
+  return date;
+}
+
+const oldDate = zeroedDate(subtractMinutes(new Date()));
+console.log(oldDate);
+
 const convincingRandomDeviation = (num) => {
   return ((num / 100) * 3 + 0.1 ** Math.random()) * 25;
 };
 
 const VisualizerBox = ({ cluster }) => {
-  const initialDate = zeroedDate();
+  const initialDate = oldDate;
   const [liveData, setLiveData] = useState(
     Array(range + 1).fill(
       { date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0 },
@@ -30,7 +38,7 @@ const VisualizerBox = ({ cluster }) => {
   console.log(liveData);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    setTimeout(() => {
       const newData = liveData.slice();
       if (dummyData) {
         const date = zeroedDate();
@@ -62,7 +70,7 @@ const VisualizerBox = ({ cluster }) => {
       }
       while (newData.length > range + 1) newData.shift();
       setLiveData(newData);
-    }, 15000);
+    }, 1000);
   }, [liveData]);
 
   const dates = liveData.map((datapoint) => datapoint.date);
@@ -83,6 +91,7 @@ const VisualizerBox = ({ cluster }) => {
               name={'CPU Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.cpu)}
+              color={'rgb(127, 191, 255)'}
             />
           }
           {
@@ -90,6 +99,7 @@ const VisualizerBox = ({ cluster }) => {
               name={'Memory Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.mem)}
+              color={'rgb(127, 159, 255)'}
             />
           }
           {/* {
@@ -104,6 +114,7 @@ const VisualizerBox = ({ cluster }) => {
               name={'Disk Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.disk)}
+              color={'rgb(127, 127, 255)'}
             />
           }
         </div>

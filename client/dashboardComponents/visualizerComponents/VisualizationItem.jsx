@@ -21,9 +21,10 @@ ChartJS.register(
   Legend
 );
 
-const VisualizationItem = ({dates, points, name}) => {
+const VisualizationItem = ({dates, points, name, color}) => {
 
   const options = {
+    maintainAspectRatio: true,
     animation: false,
     tension: 0.5,
     pointRadius: 0,
@@ -59,8 +60,8 @@ const VisualizationItem = ({dates, points, name}) => {
     labels: labels,
     datasets: [
       {
-        borderColor: 'rgb(191, 127, 255)',
-        backgroundColor: 'rgb(191, 127, 255)',
+        borderColor: color,
+        backgroundColor: color,
         label: `Current ${name}`,
         data: points.map((datapoint, index) => {
           return {x: index, y: datapoint};
