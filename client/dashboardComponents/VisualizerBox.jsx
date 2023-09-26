@@ -5,7 +5,7 @@ import ConnectionModal from './Connection.jsx';
 // Number of points of data to display per graph
 const range = 60;
 // Use dummy data instead of requesting prometheus to test charts
-const dummyData = false;
+const dummyData = true;
 
 const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
@@ -68,11 +68,13 @@ const VisualizerBox = ({ cluster }) => {
 
   const dates = liveData.map((datapoint) => datapoint.date);
   
-  Modal fucntinoality
+  //Modal fucntinoality
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleConnectClick = () => {
+    console.log('Connect button clicked');
     setModalVisible(true);
+    console.log('modalVisible set to true');
   };
 
   const handleCloseModal = () => {
@@ -120,7 +122,9 @@ const VisualizerBox = ({ cluster }) => {
           }
         </div>
       </div>
-      <ConnectionModal modalVisible={modalVisible} closeModal={handleCloseModal} />
+      <div className="modal-wrapper">
+        <ConnectionModal modalVisible={modalVisible} closeModal={handleCloseModal} />
+      </div>
     </div>
   );
 };
