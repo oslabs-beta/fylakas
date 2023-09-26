@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VisualizationItem from './visualizerComponents/VisualizationItem.jsx';
+import ConnectionModal from './Connection.jsx';
 
 // Number of points of data to display per graph
 const range = 60;
@@ -74,6 +75,19 @@ const VisualizerBox = ({ cluster }) => {
   }, [liveData]);
 
   const dates = liveData.map((datapoint) => datapoint.date);
+  
+  //Modal fucntinoality
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleConnectClick = () => {
+    console.log('Connect button clicked');
+    setModalVisible(true);
+    console.log('modalVisible set to true');
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <div className="card mb-4 rounded-3 shadow-sm">
@@ -81,7 +95,7 @@ const VisualizerBox = ({ cluster }) => {
         <div className="col-md-3 mb-2 mb-md-0"></div>
         <h4 className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal"> Display Options</h4>
         <div className="col-md-3 text-end">
-          <button className="btn btn-primary py-2 me-2">Connect</button>
+          <button className="btn btn-primary py-2 me-2" onClick={handleConnectClick}>Connect</button>
         </div>
       </div>
       <div className='card-body'>
@@ -118,6 +132,9 @@ const VisualizerBox = ({ cluster }) => {
             />
           }
         </div>
+      </div>
+      <div className="modal-wrapper">
+        <ConnectionModal modalVisible={modalVisible} closeModal={handleCloseModal} />
       </div>
     </div>
   );
