@@ -45,7 +45,7 @@ const VisualizerBox = () => {
         <div className="col-md-3 mb-2 mb-md-0"></div>
         <h4 className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal"> Display Options</h4>
         <div className="col-md-3 text-end">
-          <button className="btn btn-primary py-2 me-2">Metrics</button>
+          <button className="btn btn-primary py-2 me-2">Connect</button>
         </div>
       </div>
       <div className="card-body">
