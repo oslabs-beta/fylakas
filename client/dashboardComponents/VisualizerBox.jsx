@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import VisualizationItem from './visualizerComponents/VisualizationItem.jsx';
+import ConnectionModal from './Connection.jsx';
 
 // Number of points of data to display per graph
 const range = 60;
 // Use dummy data instead of requesting prometheus to test charts
-const dummyData = false;
+const dummyData = true;
 
 const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
@@ -14,12 +15,20 @@ const zeroedDate = (date = new Date()) => {
   return `${zeroedTimePieces[0]}:${zeroedTimePieces[1]}:${zeroedTimePieces[2]}`;
 };
 
+function subtractMinutes(date) {
+  date.setMinutes(date.getMinutes() - range/4);
+  return date;
+}
+
+const oldDate = zeroedDate(subtractMinutes(new Date()));
+console.log(oldDate);
+
 const convincingRandomDeviation = (num) => {
   return ((num / 100) * 3 + 0.1 ** Math.random()) * 25;
 };
 
 const VisualizerBox = ({ cluster }) => {
-  const initialDate = zeroedDate();
+  const initialDate = oldDate;
   const [liveData, setLiveData] = useState(
     Array(range + 1).fill(
       { date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0 },
@@ -30,7 +39,7 @@ const VisualizerBox = ({ cluster }) => {
   console.log(liveData);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    setTimeout(() => {
       const newData = liveData.slice();
       if (dummyData) {
         const date = zeroedDate();
@@ -49,7 +58,13 @@ const VisualizerBox = ({ cluster }) => {
         })
           .then((response) => {
             if (response.ok) return response.json();
-            throw new Error('ERROR: Failed to fetch metrics in VisualizerBox');
+            newData.push({
+              date: date,
+              cpu: liveData[range].cpu,
+              mem: liveData[range].mem,
+              net: liveData[range].net,
+              disk: liveData[range].disk,
+            })
           })
           .then((response) => {
             if (!response.cpu) response.cpu = liveData[range].cpu;
@@ -62,10 +77,23 @@ const VisualizerBox = ({ cluster }) => {
       }
       while (newData.length > range + 1) newData.shift();
       setLiveData(newData);
-    }, 15000);
+    }, 1000);
   }, [liveData]);
 
   const dates = liveData.map((datapoint) => datapoint.date);
+  
+  //Modal fucntinoality
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleConnectClick = () => {
+    console.log('Connect button clicked');
+    setModalVisible(true);
+    console.log('modalVisible set to true');
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <div className="card mb-4 rounded-3 shadow-sm">
@@ -73,16 +101,17 @@ const VisualizerBox = ({ cluster }) => {
         <div className="col-md-3 mb-2 mb-md-0"></div>
         <h4 className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fw-normal"> Display Options</h4>
         <div className="col-md-3 text-end">
-          <button className="btn btn-primary py-2 me-2">Connect</button>
+          <button className="btn btn-primary py-2 me-2" onClick={handleConnectClick}>Connect</button>
         </div>
       </div>
       <div className='card-body'>
-        <div className='row row-cols-1 row-cols-md-2 mb-2 text-center'>
+        <div className='row row-cols-1 mb-2 text-center'>
           {
             <VisualizationItem
               name={'CPU Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.cpu)}
+              color={'rgb(127, 191, 255)'}
             />
           }
           {
@@ -90,6 +119,7 @@ const VisualizerBox = ({ cluster }) => {
               name={'Memory Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.mem)}
+              color={'rgb(127, 159, 255)'}
             />
           }
           {/* {
@@ -104,9 +134,13 @@ const VisualizerBox = ({ cluster }) => {
               name={'Disk Usage'}
               dates={dates}
               points={liveData.map((datapoint) => datapoint.disk)}
+              color={'rgb(127, 127, 255)'}
             />
           }
         </div>
+      </div>
+      <div className="modal-wrapper">
+        <ConnectionModal modalVisible={modalVisible} closeModal={handleCloseModal} />
       </div>
     </div>
   );

@@ -1,9 +1,25 @@
+const db = require('../db/database.js');
 const PromController = {};
 
 // Prometheus server endpoint
 const prometheusUrl = 'http://localhost:9090'; // Replace with your Prometheus server URL
 
+PromController.getEndpoint = async (req, res, next) => {
+  if (!res.locals.isLoggedIn) return next();
+  try {
+    // add endpoint query
+    const endpointQuery = ``
+    res.locals.endpoint = await db.query(endpointQuery);
+  } catch (err) {
+    return next({
+      log: err,
+      message: {err: 'Error occurred requesting endpoint for Prometheus.'},
+    })
+  }
+}
+
 PromController.getDate = function (req, res, next) {
+  if (!res.locals.isLoggedIn) return next();
   // console.log('PromController.getDate middleware invoked');
   try {
     res.locals.metrics = {};
@@ -18,6 +34,7 @@ PromController.getDate = function (req, res, next) {
 };
 
 PromController.cpuUsageByContainer = async function (req, res, next) {
+  if (!res.locals.isLoggedIn) return next();
   // console.log('PromController.cpuUsageByContainer middleware invoked');
   // PromQL query
   const query =
@@ -65,6 +82,7 @@ PromController.cpuUsageByContainer = async function (req, res, next) {
 
 // Get memory usage by container and add to the metrics object on res.locals
 PromController.memoryUsageByContainer = async function (req, res, next) {
+  if (!res.locals.isLoggedIn) return next();
   // declare specific query for memory usage for each container
   const query =
     '100 * sum(container_memory_usage_bytes) / sum(container_spec_memory_limit_bytes)';
@@ -104,6 +122,7 @@ PromController.memoryUsageByContainer = async function (req, res, next) {
 };
 
 PromController.networkTrafficByContainer = async function (req, res, next) {
+  if (!res.locals.isLoggedIn) return next();
   // PromQL queries
   const receiveQuery =
     '(rate(container_network_receive_bytes_total[5m]) / 1e9) * 100';
@@ -165,6 +184,7 @@ PromController.networkTrafficByContainer = async function (req, res, next) {
 };
 
 PromController.diskSpace = async function (req, res, next) {
+  if (!res.locals.isLoggedIn) return next();
   //PromQL query for finding free space, gives percentage of available space on a pointed disk
   const query =
     //used disk space
@@ -208,5 +228,28 @@ PromController.diskSpace = async function (req, res, next) {
     });
   }
 };
+
+PromController.addEndpoint = async (req, res, next) => {
+  const { promURL } = req.body
+  const { username, isLoggedIn } = res.locals;
+  if (!isLoggedIn) {
+    res.locals.success = false;
+    return next();
+  }
+  try {
+    const userIdQuery = `SELECT user_id FROM public.users WHERE username = '${username}'`
+    const result = await db.query(userIdQuery)
+    const userId = result.rows[0].user_id;
+    const endpointQuery = `INSERT INTO public.clusters (user_id, prom_url) VALUES ('${userId}', '${promURL}');`
+    await db.query(endpointQuery);
+    res.locals.success = true;
+    return next();
+  } catch (err) {
+    return next({
+      log: err,
+      message: { err: 'Error occurred adding Prometheus endpoint to database.'}
+    })
+  }
+}
 
 module.exports = PromController;

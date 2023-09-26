@@ -141,6 +141,7 @@ authController.isLoggedIn = async (req, res, next) => {
       res.locals.isLoggedIn = false;
     } else {
       res.locals.username = matchedAccounts.rows[0].username;
+      console.log(`Verified cookie for ${res.locals.username}.`)
     }
     next();
   } catch (err) {
