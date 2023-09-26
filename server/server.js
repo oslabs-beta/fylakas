@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000; // Default to 3000 if no environment vari
 const authRouter = require('./routers/authRouter.js');
 
 // NEED TO REQUIRE k8s ROUTER STILL
-//const k8srouter = require('./routers/K8srouter.js');
+// const k8srouter = require('./routers/K8srouter.js');
 const promRouter = require('./routers/promRouter.js');
 /**
  * handle parsing request body
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 // paths to routers here
 app.use('/api/auth', authRouter);
-//app.use('/api/k8s', k8srouter);
+// app.use('/api/k8s', k8srouter);
 app.use('/api/prom', promRouter);
 
 // catch-all route handler for any requests to an unknown route
