@@ -16,7 +16,17 @@ app.use(cookieParser());
 
 // Handle static files
 app.use(express.static(path.resolve(__dirname, '../assets')));
-app.use('/build', express.static(path.resolve(__dirname, '../build')));
+
+// if (process.env.NODE_ENV === 'production') {
+//   app.use('/build', express.static(path.resolve(__dirname, '../build')));
+
+//   app.get('/', (req, res) => {
+//     return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
+//   });
+// }
+
+app.use('/', express.static(path.resolve(__dirname, '../build')));
+
 app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
