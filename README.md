@@ -16,10 +16,12 @@ Fylakas is a Kubernetes cluster monitoring and visualization tool designed to pr
 Fylakas expects users to have a preconfigured Prometheus server deployed within their cluster in order to provide metrics. If you'd like assistance with setting up a Kubernetes cluster or with deploying Kubernetes within that cluster, [this article](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) is a great place to start.
 
 1. **Connect To Your Cluster**: Ensure that both your application and your Prometheus server are deployed within your cluster by using the CLI command `kubectl get all`. The result should look something like this:
-   [IMG]()
+   ![kubectl get all GIF](./assets/readme/DEPLOY.png)
    If either Prometheus or your application are not deployed within the cluster, use the link above to determine how to deploy your application and / or Prometheus within your Kubernetes cluster.
 
-2. **Connect Your Prometheus Server to Fylakas**: On the dashboard page, within the form labeled "Connection," input and submit the URL to your Prometheus Server. Under the hood, this will be initialized to a variable which tells our PromController where to send the queries for the metrics we want. The value of the server URL defaults to [http://localhost:9090](http://localhost:9090).
+2. **Connect Your Prometheus Server to Fylakas**: On the dashboard page, within the form labeled "CONNECT," input and submit the URL to your Prometheus Server. Under the hood, this will be initialized to a variable which tells our PromController where to send the queries for the metrics you want. The value of the server URL defaults to [http://localhost:9090](http://localhost:9090).
+
+![Connect To Prom Server GIF](./assets/readme/CONNECT.gif)
 
 3. **See Your Data**: Once connected, your data should be visualized within the graphics on the dashboard page. Fylakas is configured to make a request to the Prometheus Server every 15 seconds. You can configure the interval that the Prometheus Server will scrape the data by locating or creating a `prometheus.yaml` file and assigning the desired `scrape_configs`. For example:
 
@@ -30,6 +32,8 @@ Fylakas expects users to have a preconfigured Prometheus server deployed within 
      - targets: ['example.com:9090'] # Replace with your target's address and port
        scrape_interval: 10s # Set the scrape interval to 10 seconds
        scrape_timeout: 5s # Set the scrape timeout to 5 seconds
+
+![Graphs GIF](./assets/readme/GRAPHS.gif)
 
 ## Contributing
 
@@ -46,14 +50,12 @@ If you wish to contribute and / or be part of the team, please follow the follow
 
 ## Progress
 
-| Feature                | Status |
-| ---------------------- | ------ |
-| Problem ############## | ⏳     |
-| Problem ############## | ⏳     |
-| Problem ############## | ⏳     |
-| Problem ############## | 🙏🏻     |
-| Problem ############## | 🙏🏻     |
-| Problem ############## | 🙏🏻     |
+| Feature                        | Status |
+| ------------------------------ | ------ |
+| Cluster Data Visualization     | ✅     |
+| Application Data Visualization | ⏳     |
+| Customizable Visualization     | ⏳     |
+| Predictive Visualization Tool  | 🙏🏻     |
 
 - ✅ = Ready to use
 - ⏳ = In progress
