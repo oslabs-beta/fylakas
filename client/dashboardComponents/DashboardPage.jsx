@@ -6,17 +6,21 @@ import PageMode from './PageMode.jsx';
 
 const DashboardPage = ({ logOut }) => {
   // declare initial state of our webpage and assign to 'currentHealth' using useState hook
+  // This can be further expanded upon when more tabs are added
   const [tabState, setTabState] = useState('currentHealth');
 
+  // On clicking the logout button, sends a request to remove jwt cookie 
   const handleLogOut = () => {
     fetch('api/auth/logout', {})
       .then((response) => {
+        // On a successfull logout, rerender LoginPage
         if (response.ok) logOut();
         else throw new Error('ERROR: request failed in handleLogOut');
       })
       .catch((err) => console.log(err));
   };
 
+  // Commented out PageMode render is for a Dark/Light mode option not yet fully implemented
   return (
     <div>
       <header className="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow justify-content-between" data-bs-theme="dark">

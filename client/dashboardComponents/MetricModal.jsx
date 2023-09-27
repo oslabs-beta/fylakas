@@ -1,4 +1,5 @@
-//group by will pop up, as well as more parameters will next to context if a certain metric type is selected.
+// Prototype of modal for selecting custom metrics
+// group by will pop up, as well as more parameters will next to context if a certain metric type is selected.
 return (
     <div className="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1">
       <div className="modal-dialog">

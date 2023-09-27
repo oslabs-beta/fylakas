@@ -5,11 +5,11 @@ import LoadingPage from './dashboardComponents/LoadingPage.jsx';
 import { createRoot } from 'react-dom/client';
 
 function App() {
-  // declare initial state and assign to 'false' using useState hook
+  // declare initial state and assign to 'loading' using useState hook
   const [isLoggedIn, setIsLoggedIn] = useState('loading');
 
   useEffect(() => {
-    // Will check to see if user is logged in
+    // Will check a jwt cookie to see if any user is logged in. 
     fetch('api/auth/check')
       .then((response) => {
         if (response.ok) return response.json();
@@ -17,11 +17,13 @@ function App() {
       })
       .then((response) => {
         console.log(response);
+        // Change state of isLoggedIn to match the response given
         response.isLoggedIn ? setIsLoggedIn(true) : setIsLoggedIn(false);
       });
   }, []);
 
-  // Is isLoggedIn truthy? If yes, assign page to DashboardPage.  If no, assign page to LoginPage.
+  // Load page "loading" initially.
+  // If logged in, serve the Dashboard page. If not, serve the Login page.
   const page =
     isLoggedIn === 'loading' ? (
       <LoadingPage />
@@ -35,5 +37,6 @@ function App() {
   return <div className='App'>{page}</div>;
 }
 
+// Render the application inside the root div.
 const root = createRoot(document.querySelector('#root'));
 root.render(<App />);

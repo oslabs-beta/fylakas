@@ -14,7 +14,6 @@ k8srouter.get(
   k8sController.nodeStatus,
   k8sController.podStatus,
   async (_, res) => {
-    // console.log('res.locals.cluster', res.locals.cluster);
     return res.status(200).json(res.locals.cluster);
   },
 );

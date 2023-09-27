@@ -1,22 +1,27 @@
 import React, {useState} from 'react';
 
 const SignupBox = ({ routeToLoginPage, logIn }) => {
+
+  // Declare state for field input strings and error booleans.
   const [usernameField, setUsernameField] = useState('');
   const [passwordField, setPasswordField] = useState('');
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [signupError, setSignupError] = useState(false);
 
+  // Error boxes can be empty if there is no error, or filled with the appropriate error message if needbe.
   const usernameErrorBox = usernameError ? <div>You must enter a username.</div> : <></>;
   const passwordErrorBox = passwordError ? <div>You must enter a password.</div> : <></>;
   const signupErrorBox = signupError ? <div>The username you selected already belongs to an account.</div> : <></>;
 
-  // Still requires real functionality
   const signUp = (e) => {
+    // Prevent the page from reloading on event.
     e.preventDefault();
+    // Reset all the state pertaining to errors.
     if (signupError) setSignupError(false);
     if (usernameError) setUsernameError(false);
     if (passwordError) setPasswordError(false);
+    // If both a username and password have been entered, make a login request.
     if (usernameField && passwordField) { 
       fetch('api/auth/signup', {
         method: 'POST',
@@ -28,15 +33,17 @@ const SignupBox = ({ routeToLoginPage, logIn }) => {
         throw new Error('ERROR: request in checkLogIn failed');
       })
       .then(response => {
+        // If a profile is returned, set state isLoggedIn to true.
+        // If not, flag the signupError as true.
         if (response.profile) {
           logIn();
         } else {
-          // Add functionality for failed sign up attempt
           setSignupError(true);
         }
       })
       .catch(err => console.log(err));
     } else {
+      // Determine which fields need to be filled and flag the appropriate error.
       if (!usernameField) setUsernameError(true);
       if (!passwordField) setPasswordError(true);
     }
