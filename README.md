@@ -90,11 +90,6 @@ Sebastian Salazar
 [LinkedIn](www.linkedin.com/in/sebastian-salazar/)
 [GitHub](https://github.com/razalas340)
 
-## Contributers
-
-Halia Haynes
-[LinkedIn](https://www.linkedin.com/feed/) [GitHub](https://github.com/qpgdev)
-
 ## License
 
 By contributing, you agree that your contributions will be licensed under Fylakas' MIT License.
