@@ -1,3 +1,5 @@
+// NOT IMPLEMENTED IN CURRENT VERSION.
+
 const express = require('express');
 const { postgraphile } = require('postgraphile');
 
