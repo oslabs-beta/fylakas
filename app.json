@@ -1,0 +1,8 @@
+{
+  "name": "Start on Heroku: Node.js",
+  "description": "fylakas",
+  "repository": "https://github.com/oslabs-beta/fylakas",
+  "logo": "./assets/fylakas-logo-export.png",
+  "keywords": ["node", "express", "heroku"],
+  "image": "heroku/nodejs"
+}
