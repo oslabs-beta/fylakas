@@ -16,10 +16,10 @@ export default function Sidebar() {
             <li className="nav-item">{<PastHealthTab/>}</li>
             <li className="nav-item">{<ComparisonTab/>}</li>
           </ul>
-          <hr className="my-3"></hr>
+          {/* <hr className="my-3"></hr>
           <ul className="nav flex-column">
             <li className="nav-item">{<StatBox/>}</li>
-          </ul>
+          </ul> */}
           <hr className="my-3"></hr>
           <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
             <span>Other Info</span>
