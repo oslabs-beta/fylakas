@@ -71,15 +71,24 @@ Below are descriptions of each npm script:
 ## Our Team
 
 Quinn Graves
-[LinkedIn](https://www.linkedin.com/feed/) [GitHub](https://github.com/qpgdev)
-Nathan
-[LinkedIn] [GitHub]
-Katherine
-[LinkedIn] (https://www.linkedin.com/in/katherinefry) [GitHub] (https://github.com/KatFry)
-Bogdana
-[LinkedIn] [GitHub]
-Sebastian
-[LinkedIn] [GitHub]
+[LinkedIn](https://www.linkedin.com/feed/)
+[GitHub](https://github.com/qpgdev)
+
+Nathan Gonsalves
+[LinkedIn](https://github.com/iAmKaprekar)
+[GitHub](http://www.linkedin.com/in/iamkaprekar)
+
+Katherine Fry
+[LinkedIn](https://www.linkedin.com/in/katherinefry) 
+[GitHub](https://github.com/KatFry)
+
+Bogdana Oliynyk
+[LinkedIn](https://www.linkedin.com/in/bogdanaoliynyk/)
+[GitHub](https://github.com/Bogdana-Oliynyk)
+
+Sebastian Salazar
+[LinkedIn](www.linkedin.com/in/sebastian-salazar/)
+[GitHub](https://github.com/razalas340)
 
 ## Contributers
 
