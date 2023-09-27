@@ -1,3 +1,5 @@
+// NOT IMPLEMENTED IN CURRENT VERSION.
+
 const express = require('express');
 // import * as k8s from '@kubernetes/client-node';
 const k8s = require('@kubernetes/client-node');

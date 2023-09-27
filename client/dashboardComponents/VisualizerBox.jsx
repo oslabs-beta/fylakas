@@ -4,9 +4,12 @@ import ConnectionModal from './Connection.jsx';
 
 // Number of points of data to display per graph
 const range = 60;
+// Time to wait in between requests, in milliseconds
+const delay = 15000;
 // Use dummy data instead of requesting prometheus to test charts
 const dummyData = false;
 
+// Generates a readable HH:MM:SS string from a Date object (i.e., 14:20:54)
 const zeroedDate = (date = new Date()) => {
   const timePieces = [date.getHours(), date.getMinutes(), date.getSeconds()];
   const zeroedTimePieces = timePieces.map((timePiece) => {
@@ -15,41 +18,55 @@ const zeroedDate = (date = new Date()) => {
   return `${zeroedTimePieces[0]}:${zeroedTimePieces[1]}:${zeroedTimePieces[2]}`;
 };
 
+// Removes the appropriate amount of time for first timestamp, in reference to the timerange
 function subtractMinutes(date) {
-  date.setMinutes(date.getMinutes() - range/4);
+  date.setMinutes(date.getMinutes() - range * delay / 60000);
   return date;
 }
 
-const oldDate = zeroedDate(subtractMinutes(new Date()));
-console.log(oldDate);
-
+// Function for generating dummy data (it does math don't worry about it)
 const convincingRandomDeviation = (num) => {
   return ((num / 100) * 3 + 0.1 ** Math.random()) * 25;
 };
 
 const VisualizerBox = ({ cluster }) => {
-  const initialDate = oldDate;
-  const [liveData, setLiveData] = useState(
-    Array(range + 1).fill(
-      { date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0 },
-      0,
-      range + 1
-    )
-  );
-  console.log(liveData);
 
+  // Declare an initialDate as the current time and subtracting appropriate minutes from it
+  const initialDate = zeroedDate(subtractMinutes(new Date()));;
+
+  // Initialize data as an array fitting the range of points
+  // Fill the array with blank (zeroed) data points
+  const [liveData, setLiveData] = useState(
+    Array(range + 1).fill({ date: initialDate, cpu: 0, mem: 0, net: 0, disk: 0 }, 0, range + 1)
+  );
+  
+  // Declare state for rendering the connection modal
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Handle opening/closing the modal
+  const handleConnectClick = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  // Requests updates for all datapoints
   useEffect(() => {
     setTimeout(() => {
+      // Create a copy of the existing liveData 
       const newData = liveData.slice();
+      // If generating dummy data, push convincing random deviations of the previous datapoints to newData
       if (dummyData) {
-        const date = zeroedDate();
         newData.push({
-          date: date,
+          date: zeroedDate(),
           cpu: convincingRandomDeviation(liveData[range].cpu),
           mem: convincingRandomDeviation(liveData[range].mem),
           net: convincingRandomDeviation(liveData[range].net),
           disk: convincingRandomDeviation(liveData[range].disk),
         });
+      // If not, send request to prometheus for metrics
       } else {
         fetch('api/prom/metrics', {
           method: 'POST',
@@ -58,7 +75,7 @@ const VisualizerBox = ({ cluster }) => {
         })
           .then((response) => {
             if (response.ok) return response.json();
-            console.log(liveData.length);
+            // If request fails, imitate all previous datapoints
             return {
               date: zeroedDate(),
               cpu: liveData[range].cpu,
@@ -68,34 +85,32 @@ const VisualizerBox = ({ cluster }) => {
             }
           })
           .then((response) => {
+            // If any values are missing from request, duplicate previous datapoint for that metric
             if (!response.cpu) response.cpu = liveData[range].cpu;
             if (!response.mem) response.mem = liveData[range].mem;
             if (!response.net) response.net = liveData[range].net;
             if (!response.disk) response.disk = liveData[range].disk;
             response.date = zeroedDate();
+            // Push acquired data to the end of the newData array
             newData.push(response);
-          });
+          })
+          .catch(err => console.log(err));
       }
+      // Trim the array down to the appropriate length, removing old data
       while (newData.length > range + 1) newData.shift();
+      // Update the liveData object with the newData
       setLiveData(newData);
-    }, 15000);
+    }, delay);
+    // This functionality loops every (delay) milliseconds
+    // The following dependency ensures the recalling of this useEffect hook
   }, [liveData]);
 
+  // Map the dates from liveData to their own array
   const dates = liveData.map((datapoint) => datapoint.date);
-  
-  //Modal fucntinoality
-  const [modalVisible, setModalVisible] = useState(false);
 
-  const handleConnectClick = () => {
-    console.log('Connect button clicked');
-    setModalVisible(true);
-    console.log('modalVisible set to true');
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
-
+  // Pass down the relevant metric to each visualization item
+  // Pass down dates to every visualization item
+  // Pass down name/coloration of each chart
   return (
     <div className="card mb-4 rounded-3 shadow-sm">
       <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">

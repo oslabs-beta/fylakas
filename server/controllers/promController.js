@@ -1,23 +1,24 @@
 const db = require('../db/database.js');
 const PromController = {};
 
-// Prometheus server endpoint
-// const prometheusUrl = 'http://localhost:9090'; // Replace with your Prometheus server URL
-
+// Get Prometheus URL for any given data request
 PromController.getEndpoint = async (req, res, next) => {
   const { username } = res.locals;
   if (!res.locals.isLoggedIn) return next();
   try {
-    // add endpoint query
+    // Find userID associated with stored username
     const userIdQuery = `SELECT user_id FROM public.users WHERE username = '${username}';`;
     const result = await db.query(userIdQuery);
     const userId = result.rows[0].user_id;
+    // Find all endpoints associated with stored userID
     const endpointQuery = `SELECT prom_url FROM public.clusters WHERE user_id = '${userId}';`;
     const endpoints = await db.query(endpointQuery);
+    // Store the most recently added endpoint on res.locals
     if (endpoints.rows[0] !== undefined) {
       res.locals.prometheusUrl = endpoints.rows[endpoints.rows.length - 1].prom_url;
       console.log(`Fetching data from "${res.locals.prometheusUrl}" for "${username}".`);
     } else {
+      // If none exists, disable the following middleware by setting isloggedIn to false
       res.locals.isLoggedIn = false;
       console.log(`Cannot fetch data for "${username}" without a request URL.`);
     }
@@ -30,9 +31,8 @@ PromController.getEndpoint = async (req, res, next) => {
   }
 }
 
+// Store the current date and initialize metrics object
 PromController.getDate = function (req, res, next) {
-  // if (!res.locals.isLoggedIn) return next();
-  // console.log('PromController.getDate middleware invoked');
   try {
     res.locals.metrics = {};
     res.locals.metrics.date = Date.now();
@@ -45,20 +45,15 @@ PromController.getDate = function (req, res, next) {
   }
 };
 
+// Get cpu usage by container and add to the metrics object on res.locals
 PromController.cpuUsageByContainer = async function (req, res, next) {
   const {isLoggedIn, prometheusUrl} = res.locals;
-  console.log(prometheusUrl);
   if (!isLoggedIn) return next();
-  console.log('PromController.cpuUsageByContainer middleware invoked');
   // PromQL query
-  const query =
-    '(100 * sum(rate(node_cpu_seconds_total{mode="user"}[5m])) by (cluster)) / (sum(rate(node_cpu_seconds_total[5m])) by (cluster))';
-  //'sum(rate(node_cpu_seconds_total{mode="user"}[5m])) by (cluster) * 100'; // Replace with your desired PromQL query
+  const query = '(100 * sum(rate(node_cpu_seconds_total{mode="user"}[5m])) by (cluster)) / (sum(rate(node_cpu_seconds_total[5m])) by (cluster))';
 
   // Construct the URL for the query
-  const queryUrl = `${prometheusUrl}/api/v1/query?query=${encodeURIComponent(
-    query
-  )}`;
+  const queryUrl = `${prometheusUrl}/api/v1/query?query=${encodeURIComponent(query)}`;
 
   try {
     const response = await fetch(queryUrl, {
@@ -76,12 +71,7 @@ PromController.cpuUsageByContainer = async function (req, res, next) {
     }
 
     const queryData = await response.json();
-    // console.log(
-    //   'Data returned from GET request to prometheus server',
-    //   queryData
-    // );
 
-    // console.log('data to test:', queryData);
     if (queryData.data.result[0])
       res.locals.metrics.cpu = queryData.data.result[0].value[1];
 
@@ -123,7 +113,7 @@ PromController.memoryUsageByContainer = async function (req, res, next) {
     }
 
     const queryData = await response.json();
-    // console.log(queryData);
+
     // assign memoryUsageByContainer as a property on res.locals.metrics assigned to the data received from the fetch
     if (queryData.data.result[0])
       res.locals.metrics.mem = queryData.data.result[0].value[1];
@@ -136,13 +126,13 @@ PromController.memoryUsageByContainer = async function (req, res, next) {
   }
 };
 
+// CURRENTLY UNUSED: Get network traffic by container and add to the metrics object on res.locals
 PromController.networkTrafficByContainer = async function (req, res, next) {
   const {isLoggedIn, prometheusUrl} = res.locals;
   if (!isLoggedIn) return next();
   // PromQL queries
   const receiveQuery =
     '(rate(container_network_receive_bytes_total[5m]) / 1e9) * 100';
-  //'100 * rate(container_network_receive_bytes_total[5m])';
   const transmitQuery =
     '(rate(container_network_receive_bytes_total[5m]) / 1e9) * 100';
   // Construct the URL for the queries
@@ -199,15 +189,17 @@ PromController.networkTrafficByContainer = async function (req, res, next) {
   }
 };
 
+// Get disk usage by container and add to the metrics object on res.locals
 PromController.diskSpace = async function (req, res, next) {
   const {isLoggedIn, prometheusUrl} = res.locals;
   if (!isLoggedIn) return next();
   //PromQL query for finding free space, gives percentage of available space on a pointed disk
   const query =
-    //used disk space
+  //used disk space
     '100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"})';
   //free disk space
   // '100 * (node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"})';
+
   //Construct the URL for the query
   const queryUrl = `${prometheusUrl}/api/v1/query?query=${encodeURIComponent(
     query
@@ -228,12 +220,7 @@ PromController.diskSpace = async function (req, res, next) {
     }
 
     const queryData = await response.json();
-    // console.log(
-    //   'Data returned from GET request to prometheus server',
-    //   queryData
-    // );
 
-    // console.log('data to test:', queryResult);
     if (queryData.data.result[0])
       res.locals.metrics.disk = queryData.data.result[0].value[1];
 
@@ -246,18 +233,22 @@ PromController.diskSpace = async function (req, res, next) {
   }
 };
 
+// Add new Prometheus URL for a given account
 PromController.addEndpoint = async (req, res, next) => {
   const { promURL } = req.body
   const { username, isLoggedIn } = res.locals;
+  // Reject request if user is not logged in
   if (!isLoggedIn) {
     res.locals.success = false;
     return next();
   }
   try {
+    // Find userID associated with stored username
     const userIdQuery = `SELECT user_id FROM public.users WHERE username = '${username}'`
     const result = await db.query(userIdQuery)
     const userId = result.rows[0].user_id;
     console.log(`Adding endpoint "${promURL}" for user "${username}".`);
+    // Add endpoint to clusters table linked to the userID
     const endpointQuery = `INSERT INTO public.clusters (user_id, prom_url) VALUES ('${userId}', '${promURL}');`
     await db.query(endpointQuery);
     res.locals.success = true;
