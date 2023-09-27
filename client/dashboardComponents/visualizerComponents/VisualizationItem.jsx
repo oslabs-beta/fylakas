@@ -23,11 +23,17 @@ ChartJS.register(
 
 const VisualizationItem = ({dates, points, name, color}) => {
 
+  // Options object expected by react-chartjs 
+  // The chartjs docs are wonderful (https://www.chartjs.org/docs/latest/)
   const options = {
     maintainAspectRatio: true,
+    // Disable animations
     animation: false,
+    // Keep the line optimally curvy
     tension: 0.5,
+    // Remove hover points
     pointRadius: 0,
+    // Declare data ranges and names for X and Y axes
     scales: {
       x: {
         min: 0,
@@ -52,10 +58,13 @@ const VisualizationItem = ({dates, points, name, color}) => {
     }
   };
 
+  // Declare labels array to insert into data object
   const labels = [dates[0]];
+  // Fill entirely with blank entries except for the first/last datapoint
   for (let i = 2; i < dates.length; i++) labels.push('');
   labels.push(dates[dates.length - 1]);
 
+  // Data object expected by reach-chartjs
   const data = {
     labels: labels,
     datasets: [
@@ -63,6 +72,7 @@ const VisualizationItem = ({dates, points, name, color}) => {
         borderColor: color,
         backgroundColor: color,
         label: `Current ${name}`,
+        // Map the data from properties to the chart
         data: points.map((datapoint, index) => {
           return {x: index, y: datapoint};
         })

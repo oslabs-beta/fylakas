@@ -12,10 +12,8 @@ promRouter.post(
   PromController.getDate,
   PromController.cpuUsageByContainer,
   PromController.memoryUsageByContainer,
-  // PromController.networkTrafficByContainer,
   PromController.diskSpace,
   async (_, res) => {
-    // console.log('res.locals.cluster', res.locals.cluster);
     console.log(`Sending res.locals.metrics to ${res.locals.username}.`);
     return res.status(200).json(res.locals.metrics);
   }

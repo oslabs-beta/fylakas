@@ -10,5 +10,5 @@ module.exports = {
   query: (text, params, callback) => {
     return pool.query(text, params, callback);
   },
-  end: () => pool.end(), // Add this line to expose the end method
+  end: () => pool.end(),
 };
