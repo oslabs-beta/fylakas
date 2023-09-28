@@ -73,15 +73,15 @@ Below are descriptions of each npm script:
 ## Our Team
 
 Quinn Graves
-[LinkedIn](https://www.linkedin.com/feed/)
+[LinkedIn](https://www.linkedin.com/in/quinn-graves-84673028a/)
 [GitHub](https://github.com/qpgdev)
 
 Nathan Gonsalves
-[LinkedIn](https://github.com/iAmKaprekar)
-[GitHub](http://www.linkedin.com/in/iamkaprekar)
+[LinkedIn](http://www.linkedin.com/in/iamkaprekar)
+[GitHub](https://github.com/iAmKaprekar)
 
 Katherine Fry
-[LinkedIn](https://www.linkedin.com/in/katherinefry) 
+[LinkedIn](www.linkedin.com/in/katherine-fry-49071021b) 
 [GitHub](https://github.com/KatFry)
 
 Bogdana Oliynyk
@@ -89,7 +89,7 @@ Bogdana Oliynyk
 [GitHub](https://github.com/Bogdana-Oliynyk)
 
 Sebastian Salazar
-[LinkedIn](www.linkedin.com/in/sebastian-salazar/)
+[LinkedIn](https://www.linkedin.com/in/sebastian-salazar/)
 [GitHub](https://github.com/razalas340)
 
 ## License
