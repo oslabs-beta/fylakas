@@ -77,11 +77,11 @@ Quinn Graves
 [GitHub](https://github.com/qpgdev)
 
 Nathan Gonsalves
-[LinkedIn](http://www.linkedin.com/in/iamkaprekar)
+[LinkedIn](https://www.linkedin.com/in/iamkaprekar)
 [GitHub](https://github.com/iAmKaprekar)
 
 Katherine Fry
-[LinkedIn](www.linkedin.com/in/katherine-fry-49071021b) 
+[LinkedIn](https://www.linkedin.com/in/katherine-fry-49071021b) 
 [GitHub](https://github.com/KatFry)
 
 Bogdana Oliynyk
@@ -89,7 +89,7 @@ Bogdana Oliynyk
 [GitHub](https://github.com/Bogdana-Oliynyk)
 
 Sebastian Salazar
-[LinkedIn](https://www.linkedin.com/in/sebastian-salazar/)
+[LinkedIn](https://www.linkedin.com/in/sebastian-salazar-526b75284/)
 [GitHub](https://github.com/razalas340)
 
 ## License
