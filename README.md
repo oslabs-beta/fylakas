@@ -81,7 +81,7 @@ Nathan Gonsalves
 [GitHub](https://github.com/iAmKaprekar)
 
 Katherine Fry
-[LinkedIn](https://www.linkedin.com/in/katherinefry) 
+[LinkedIn](www.linkedin.com/in/katherine-fry-49071021b) 
 [GitHub](https://github.com/KatFry)
 
 Bogdana Oliynyk
