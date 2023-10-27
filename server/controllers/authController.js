@@ -4,7 +4,7 @@ const db = require('../db/database.js');
 
 // Settings for hashing
 const WORKFACTOR = 12;
-const AUTHKEY = 'd433288a-649e-4f57-8786-4824bf35c5e3';
+const AUTHKEY = process.env.AUTHKEY;
 
 const authController = {};
 
