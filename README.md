@@ -13,7 +13,7 @@ Fylakas is a Kubernetes cluster monitoring and visualization tool designed to pr
 
 ## Getting Started
 
-Fylakas expects users to have a preconfigured Prometheus server deployed within their cluster in order to provide metrics. If you'd like assistance with setting up a Kubernetes cluster or with deploying Kubernetes within that cluster, [this article](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) is a great place to start.
+Fylakas expects users to have a preconfigured Prometheus server deployed within their cluster in order to display metrics. If you'd like assistance with setting up a Kubernetes cluster or with deploying Kubernetes within that cluster, [this article](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) is a great place to start.
 
 1. **Connect To Your Cluster**: Ensure that both your application and your Prometheus server are deployed within your cluster by using the CLI command `kubectl get all`. The result should look something like this:
    ![kubectl get all GIF](./assets/readme/DEPLOY.png)
